@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Notice by NU</string>
     <string name="changelog">Google Play Store has received a number of updates over the last few months. Google added one-tap buttons to leave betas and more, the Google Play Pass subscription, and a brand new Material Theme redesign. That new design gave us (eventually) a Dark Theme that works with the Android 10 system setting, but it also brought a strange change to the changelog previews.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
