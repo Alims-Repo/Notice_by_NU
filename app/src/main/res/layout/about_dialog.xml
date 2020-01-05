@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="270dp"
+    android:layout_height="360dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/me_2" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="15dp"
+        android:src="@drawable/ic_close" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/me"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="50dp"
+        app:civ_border_color="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="35dp"
+        android:text="Alim Sourav"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="26sp"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="65dp"
+        android:text="Application Developer"
+        android:fontFamily="@font/roboto_thin"
+        android:textSize="16sp"
+        android:textColor="@color/colorWhite"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="105dp">
+
+        <ImageView
+            android:id="@+id/facebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_facebook"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="7dp"
+            android:layout_gravity="end"/>
+
+        <ImageView
+            android:id="@+id/instagram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_instagram"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="7dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="50dp"/>
+
+        <ImageView
+            android:id="@+id/twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="7dp"
+            android:src="@drawable/ic_twitter"
+            android:layout_gravity="end"
+            android:layout_marginEnd="100dp"/>
+
+        <ImageView
+            android:id="@+id/git_hub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="7dp"
+            android:src="@drawable/ic_github"
+            android:layout_gravity="end"
+            android:layout_marginEnd="150dp"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="souravalim@outlook.com"
+        android:layout_marginTop="150dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginEnd="60dp"
+        android:layout_gravity="center_vertical|end"/>
+
+    <ImageView
+        android:id="@+id/mail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="7dp"
+        android:src="@drawable/ic_mail_black_24dp"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginTop="151dp"
+        android:layout_marginEnd="20dp"/>
+
+</FrameLayout>

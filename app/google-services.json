@@ -1,0 +1,95 @@
+{
+  "project_info": {
+    "project_number": "628245379893",
+    "firebase_url": "https://accents-c2df2.firebaseio.com",
+    "project_id": "accents-c2df2",
+    "storage_bucket": "accents-c2df2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628245379893:android:340ea9dd8a38445d0faa7c",
+        "android_client_info": {
+          "package_name": "com.alim.cse.noticebynu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628245379893-s8ud5vbqal0o7g8bdgarq03f6ru2unuq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alim.cse.noticebynu",
+            "certificate_hash": "1d77585969853ad8f940b89e768bc7dd7b06a808"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEBZzlQACiOzr8K0NmA1ECqCvxvRkR52U"
+        },
+        {
+          "current_key": "AIzaSyAvVDryseWlWn1LLplw2OakVpYlSh9zRaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628245379893:android:a6d771f3f5f37be80faa7c",
+        "android_client_info": {
+          "package_name": "com.alim.cse.nu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628245379893-95rkvulonsu48oumoqs4d6hh5vmcccm6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alim.cse.nu",
+            "certificate_hash": "1d77585969853ad8f940b89e768bc7dd7b06a808"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEBZzlQACiOzr8K0NmA1ECqCvxvRkR52U"
+        },
+        {
+          "current_key": "AIzaSyAvVDryseWlWn1LLplw2OakVpYlSh9zRaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628245379893:android:8adb393965ec0ede0faa7c",
+        "android_client_info": {
+          "package_name": "com.alim.root.facebook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEBZzlQACiOzr8K0NmA1ECqCvxvRkR52U"
+        },
+        {
+          "current_key": "AIzaSyAvVDryseWlWn1LLplw2OakVpYlSh9zRaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
