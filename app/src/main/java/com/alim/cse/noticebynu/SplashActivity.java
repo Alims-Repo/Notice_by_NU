@@ -13,9 +13,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.alim.cse.noticebynu.Process.NetworkCheck;
-import com.alim.cse.noticebynu.Services.Background;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -32,10 +30,12 @@ public class SplashActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_splash);
 
         networkCheck = new NetworkCheck();
-        updater = new Updater(this,false);
+        updater = new Updater(this);
         networkCheck.registerClient(this);
         updater.registerClient(this);
         networkCheck.hostAvailable();
+        //Will be deleted latter...
+        //startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override
@@ -46,6 +46,7 @@ public class SplashActivity extends AppCompatActivity implements
                     Storage_Perm);
         } else {
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
     }
 

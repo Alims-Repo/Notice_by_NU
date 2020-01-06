@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.alim.cse.noticebynu.BuildConfig;
+import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.ErrorActivity;
 import com.alim.cse.noticebynu.R;
 
@@ -48,22 +49,18 @@ import java.net.URL;
 @SuppressLint("SetTextI18n , StaticFieldLeak")
 public class Updater {
 
+    private Final config;
     private String BUG = null;
-    private File PATH = new File("/sdcard/CSE by nu/Application/CSE by nu.apk");
     private boolean push = true;
     private Notification notification;
-    //String APK_URL = "nsfg";
-    private final String APK_URL = "https://github.com/Hacker-0/CSE_by_Nu/raw/master/app/release/app-release.apk";
-    private final String URL = "https://raw.githubusercontent.com/Hacker-0/CSE_by_Nu/master/app/release/output.json";
-    private boolean bool;
     private Callbacks callbacks;
     private Context context;
 
-    public Updater(Context context, boolean check) {
-        this.bool = check;
+    public Updater(Context context) {
         this.context = context;
         notification = new Notification(context,"Download",
                 "Updater","Downloading Notification");
+        config = new Final();
     }
 
     public class Version extends AsyncTask<Void, String, String> {
@@ -76,9 +73,8 @@ public class Updater {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                Log.println(Log.ASSERT,"onPreExecute","Started");
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(URL);
+                HttpGet httpGet = new HttpGet(config.URL());
                 HttpResponse response = httpClient.execute(httpGet);
                 HttpEntity httpEntity = response.getEntity();
                 return EntityUtils.toString(httpEntity);
@@ -98,13 +94,10 @@ public class Updater {
                     JSONObject jsonObject = jsonArray.getJSONObject(0);
                     String VERSION_NAME = jsonObject.getJSONObject("apkData").getString("versionName");
                     int VERSION_CODE = jsonObject.getJSONObject("apkData").getInt("versionCode");
-                    Log.println(Log.ASSERT,"VERSION_CODE",String.valueOf(VERSION_CODE));
                     int versionCode = BuildConfig.VERSION_CODE;
-                    Log.println(Log.ASSERT,"version_code",String.valueOf(versionCode));
-
                     if (VERSION_CODE> versionCode)
                         About(VERSION_NAME);
-                    else if (bool) {
+                    else  {
                         callbacks.updateClient(1);
                         Toast.makeText(context, "No Update available.", Toast.LENGTH_SHORT).show();
                     }
@@ -127,7 +120,7 @@ public class Updater {
             OutputStream output = null;
             HttpURLConnection connection = null;
             try {
-                java.net.URL url = new URL(APK_URL);
+                java.net.URL url = new URL(config.APK_URL());
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -138,7 +131,7 @@ public class Updater {
                 Log.println(Log.ASSERT, "SIZE","file_size = " + fileLength);
                 input = connection.getInputStream();
 
-                output = new FileOutputStream(PATH);
+                output = new FileOutputStream(config.Path());
 
                 byte[] data = new byte[4096];
                 long total = 0;
@@ -186,7 +179,7 @@ public class Updater {
             mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                     getClass().getName());
             mWakeLock.acquire();
-            File dir = new File(Environment.getDataDirectory().getPath()+"/CSE by nu/Application/");
+            File dir = new File(Environment.getDataDirectory().getPath()+"/Notice by NU/Application/");
             if(!dir.exists())
                 dir.mkdirs();
         }
@@ -218,7 +211,7 @@ public class Updater {
                 Intent intent = null;
                 PendingIntent pendingIntent = null;
                 try {
-                    File PATH = new File("/sdcard/CSE by nu/Application/CSE by nu.apk");
+                    File PATH = new File("/sdcard/Notice by NU/Application/Notice by NU.apk");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", PATH);
                         intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);

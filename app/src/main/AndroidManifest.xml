@@ -25,6 +25,7 @@
             android:name=".Services.Background"
             android:enabled="true"
             android:exported="true"
+            android:stopWithTask="false"
             tools:ignore="InnerclassSeparator"
             android:permission="TODO" />
 
