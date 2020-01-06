@@ -256,7 +256,7 @@ public class Updater {
     }
 
     private void About(String LatestVersion_Name) {
-        Log.println(Log.ASSERT,"About", "got it");
+        Log.println(Log.ASSERT,"UIProcess", "got it");
         final Dialog dialog = new Dialog(context, R.style.AlertDialogLight);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);

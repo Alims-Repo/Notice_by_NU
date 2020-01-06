@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,23 +14,41 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import com.alim.cse.noticebynu.Process.NetworkCheck;
+
+import com.alim.cse.noticebynu.Database.AppSettings;
+import com.alim.cse.noticebynu.Process.Connectivity;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.snackbar.Snackbar;
 
 public class SplashActivity extends AppCompatActivity implements
-        Updater.Callbacks, NetworkCheck.Callbacks {
+        Updater.Callbacks, Connectivity.Callbacks {
 
-    NetworkCheck networkCheck;
+    AppSettings appSettings;
+    Connectivity networkCheck;
     Updater updater;
     int Storage_Perm = 4337;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        appSettings = new AppSettings(this);
+        if (appSettings.getTHEME()==1) {
+            setTheme(R.style.AppThemeDark);
+        } else if (appSettings.getTHEME()==2) {
+            setTheme(R.style.AppTheme);
+        } else {
+            switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
+                case Configuration.UI_MODE_NIGHT_YES:
+                    setTheme(R.style.AppThemeDark);
+                    break;
+                case Configuration.UI_MODE_NIGHT_NO:
+                    setTheme(R.style.AppTheme);
+                    break;
+            }
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        networkCheck = new NetworkCheck();
+        networkCheck = new Connectivity();
         updater = new Updater(this);
         networkCheck.registerClient(this);
         updater.registerClient(this);

@@ -16,9 +16,9 @@ import java.net.URL;
 
 public class Downloader {
 
-    String URL;
-    String type;
-    Context context;
+    private String URL;
+    private String type;
+    private Context context;
     private Callbacks callbacks;
 
     public Downloader(Context context, String URL, String type) {
@@ -46,6 +46,7 @@ public class Downloader {
                 }
                 int fileLength = connection.getContentLength();
                 input = connection.getInputStream();
+                Log.println(Log.ASSERT,"CON",connection.toString());
 
                 File myDirectory = new File(Environment.getExternalStorageDirectory(), "/Notice by NU/"+type);
                 if(!myDirectory.exists())

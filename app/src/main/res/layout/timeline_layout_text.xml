@@ -12,7 +12,6 @@
     app:cardCornerRadius="10dp"
     app:cardElevation="10dp"
     android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground"
     android:focusable="true">
 
     <FrameLayout
@@ -24,16 +23,22 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/me"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:text="Alim Sourav"
+            android:paddingEnd="50dp"
+            android:paddingStart="5dp"
             android:gravity="center"
+            android:foreground="?android:attr/selectableItemBackground"
             android:fontFamily="@font/roboto_bold"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="45dp"
             android:textSize="20sp"/>
 
     </FrameLayout>

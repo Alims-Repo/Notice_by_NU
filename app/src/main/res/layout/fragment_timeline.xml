@@ -4,23 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.TimelineFragment">
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_view_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        shimmer:shimmer_duration="1000">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <include layout="@layout/data_placeholder_layout" />
-            <include layout="@layout/data_placeholder_layout" />
-            <include layout="@layout/data_placeholder_layout" />
+            <include layout="@layout/placeholder_layout_2" />
+            <include layout="@layout/placeholder_layout" />
+            <include layout="@layout/placeholder_layout_2" />
+            <include layout="@layout/placeholder_layout" />
         </LinearLayout>
 
     </com.facebook.shimmer.ShimmerFrameLayout>
