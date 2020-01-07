@@ -284,12 +284,39 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/check_update"
+                android:id="@+id/download"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="215dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_file_download_black_24dp"
+                    android:tint="?attr/icon_color"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Auto save downloaded pdf"
+                    android:textSize="17sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/roboto_regular"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/check_update"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="270dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="5dp">

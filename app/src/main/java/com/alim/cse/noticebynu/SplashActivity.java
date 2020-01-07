@@ -3,6 +3,8 @@ package com.alim.cse.noticebynu;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -52,9 +54,16 @@ public class SplashActivity extends AppCompatActivity implements
         updater = new Updater(this);
         networkCheck.registerClient(this);
         updater.registerClient(this);
-        networkCheck.hostAvailable();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED)
+            networkCheck.hostAvailable();
+        else
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    Storage_Perm);
         //Will be deleted latter...
-        //startActivity(new Intent(this, MainActivity.class));
+       // startActivity(new Intent(this, ErrorActivity.class));
     }
 
     @Override
@@ -78,7 +87,10 @@ public class SplashActivity extends AppCompatActivity implements
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 updater.new Version().execute();
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-            }
+            } else
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        Storage_Perm);
         }
     }
 

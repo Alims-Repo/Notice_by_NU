@@ -18,15 +18,6 @@
         app:cardCornerRadius="10dp"
         android:layout_marginTop="5dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="38dp"
-            android:layout_marginStart="10dp"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/me"/>
-
         <TextView
             android:id="@+id/app_bar_text"
             android:layout_width="wrap_content"
@@ -35,7 +26,7 @@
             android:textSize="24sp"
             android:fontFamily="@font/roboto_bold"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="60dp"/>
+            android:layout_marginStart="20dp"/>
 
         <ImageView
             android:id="@+id/menu"

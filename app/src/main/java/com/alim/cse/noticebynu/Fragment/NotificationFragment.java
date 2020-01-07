@@ -2,12 +2,10 @@ package com.alim.cse.noticebynu.Fragment;
 
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alim.cse.noticebynu.Process.HTML;
 import com.alim.cse.noticebynu.R;
 
 public class NotificationFragment extends Fragment {

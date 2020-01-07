@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements Downloader.Callba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startService(new Intent(this, Background.class));
+        //startService(new Intent(this, Background.class));
         fragment = new TimelineFragment();
         bottomNavigationView = findViewById(R.id.bottom_nav);
         menu = findViewById(R.id.menu);
