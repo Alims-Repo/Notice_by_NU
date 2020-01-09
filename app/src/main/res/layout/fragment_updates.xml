@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.TimelineFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragment.UpdatesFragment">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:elevation="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:cardCornerRadius="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/app_bar_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Updates"
+            android:textSize="24sp"
+            android:fontFamily="@font/roboto_bold"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"/>
+
+        <ImageView
+            android:id="@+id/menu"
+            android:clickable="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|end"
+            android:padding="10dp"
+            android:src="@drawable/ic_menu"/>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_view_container"
         android:layout_width="wrap_content"
+        android:layout_marginTop="60dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -27,6 +59,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
+        android:layout_marginTop="60dp"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView

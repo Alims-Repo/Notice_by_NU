@@ -1,6 +1,6 @@
 package com.alim.cse.noticebynu.Fragment;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,7 +36,7 @@ public class SettingsFragment extends Fragment implements Updater.Callbacks {
 
         appSettings = new AppSettings(getActivity());
         darkMode = rootView.findViewById(R.id.dark_mode);
-        notification = rootView.findViewById(R.id.notification);
+        notification = rootView.findViewById(R.id.saved);
 
         error = rootView.findViewById(R.id.error);
         update = rootView.findViewById(R.id.check_update);
@@ -64,7 +64,7 @@ public class SettingsFragment extends Fragment implements Updater.Callbacks {
                 break;
         }
 
-        if (appSettings.getNOTIFICATION()) {
+        if (appSettings.getAUTOSAVE()) {
             notification.check(R.id.n_on);
             n_on.setClickable(false);
         }
@@ -107,11 +107,11 @@ public class SettingsFragment extends Fragment implements Updater.Callbacks {
                 if (i==R.id.n_on) {
                     n_on.setClickable(false);
                     n_off.setClickable(true);
-                    appSettings.setNOTIFICATION(true);
+                    appSettings.setAUTOSAVE(true);
                 } else {
                     n_on.setClickable(true);
                     n_off.setClickable(false);
-                    appSettings.setNOTIFICATION(false);
+                    appSettings.setAUTOSAVE(false);
                 }
             }
         });

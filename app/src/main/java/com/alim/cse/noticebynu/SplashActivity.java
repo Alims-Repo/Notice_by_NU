@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
@@ -21,6 +22,8 @@ import com.alim.cse.noticebynu.Database.AppSettings;
 import com.alim.cse.noticebynu.Process.Connectivity;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
 
 public class SplashActivity extends AppCompatActivity implements
         Updater.Callbacks, Connectivity.Callbacks {
@@ -56,14 +59,17 @@ public class SplashActivity extends AppCompatActivity implements
         updater.registerClient(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED)
-            networkCheck.hostAvailable();
-        else
+                == PackageManager.PERMISSION_GRANTED) {
+            File myDirectory = new File(Environment.getExternalStorageDirectory(), "/Notice by NU/"+"pdf");
+            if(!myDirectory.exists())
+                myDirectory.mkdirs();
+            //networkCheck.hostAvailable();
+        } else
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     Storage_Perm);
         //Will be deleted latter...
-       // startActivity(new Intent(this, ErrorActivity.class));
+       startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override

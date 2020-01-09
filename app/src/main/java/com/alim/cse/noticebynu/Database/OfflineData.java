@@ -3,39 +3,40 @@ package com.alim.cse.noticebynu.Database;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class AppSettings {
+public class OfflineData {
 
     private Context context;
 
-    public AppSettings(Context Appcontext) {
+    public OfflineData(Context Appcontext) {
         context = Appcontext;
     }
 
-    private final String DATA_NAME = "APP_SETTINGS";
-    private final String THEME = "THEME";
-    private final String AUTOSAVE = "AUTOSAVE";
+    private final String NAME = "NAME";
+    private final String LAST = "LAST";
+    private final String DATA_NAME = "OFFLINE_DATA";
 
-    public void setTHEME(int value) {
+    public void setNAME(String value) {
         SharedPreferences sharedPref = context.getSharedPreferences(DATA_NAME, 0);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(THEME, value);
+        editor.putString(NAME+getLast(), value);
+        setLast(getLast()+1);
         editor.apply();
     }
 
-    public int getTHEME() {
+    public String getNAME(int value) {
         SharedPreferences prefs = context.getSharedPreferences(DATA_NAME, 0);
-        return prefs.getInt(THEME,0);
+        return prefs.getString(NAME+value,"");
     }
 
-    public void setAUTOSAVE(Boolean value) {
+    private void setLast(int value) {
         SharedPreferences sharedPref = context.getSharedPreferences(DATA_NAME, 0);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(AUTOSAVE, value);
+        editor.putInt(LAST, value);
         editor.apply();
     }
 
-    public boolean getAUTOSAVE() {
+    public int getLast() {
         SharedPreferences prefs = context.getSharedPreferences(DATA_NAME, 0);
-        return prefs.getBoolean(AUTOSAVE,true);
+        return prefs.getInt(LAST,0);
     }
 }

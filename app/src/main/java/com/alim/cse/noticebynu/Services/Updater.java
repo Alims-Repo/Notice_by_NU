@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
@@ -131,7 +130,7 @@ public class Updater {
                 Log.println(Log.ASSERT, "SIZE","file_size = " + fileLength);
                 input = connection.getInputStream();
 
-                output = new FileOutputStream(config.Path());
+                output = new FileOutputStream(config.ApkPath());
 
                 byte[] data = new byte[4096];
                 long total = 0;

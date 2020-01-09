@@ -11,7 +11,7 @@
     <color name="colorGray">#4E4E4E</color>
     <color name="colorLiteGray">#CFCFCF</color>
 
-    <color name="colorDarkGray">#292929</color>
+    <color name="colorDarkGray">#1B1B1B</color>
     <color name="colorGradusBlue">#1e6afe</color>
     <color name="colorViolet">#c423fd</color>
     <color name="colorJustBlack">#030303</color>
@@ -28,4 +28,6 @@
 
     <color name="background">#dddddd</color>
     <color name="background2">#E4E4E4</color>
+
+    <color name="colorTransparent">#00FFFFFF</color>
 </resources>

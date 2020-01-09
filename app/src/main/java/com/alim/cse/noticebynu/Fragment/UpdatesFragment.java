@@ -2,43 +2,42 @@ package com.alim.cse.noticebynu.Fragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
-
+import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.alim.cse.noticebynu.Adapter.Timeline;
+import android.widget.ImageView;
+import com.alim.cse.noticebynu.Adapter.Updates;
 import com.alim.cse.noticebynu.Config.Final;
-import com.alim.cse.noticebynu.Interfaces.FetchData;
+import com.alim.cse.noticebynu.Process.UIProcess;
 import com.alim.cse.noticebynu.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimelineFragment extends Fragment{
+public class UpdatesFragment extends Fragment{
 
     int pos = 40;
     int start, end;
     String WebData;
     Boolean scroll = false;
+    ImageView menu;
     FloatingActionButton top;
     SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
@@ -52,17 +51,18 @@ public class TimelineFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_timeline, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_updates, container, false);
 
         shimmerFrameLayout = rootView.findViewById(R.id.shimmer_view_container);
         shimmerFrameLayout.startShimmer();
         top = rootView.findViewById(R.id.go_top);
+        menu = rootView.findViewById(R.id.menu);
         refreshLayout = rootView.findViewById(R.id.refresh);
         recyclerView = rootView.findViewById(R.id.recycle_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new Timeline(mData, mDate, mLink);
+        mAdapter = new Updates(mData, mDate, mLink, false);
         recyclerView.setVisibility(View.GONE);
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty())
@@ -85,6 +85,7 @@ public class TimelineFragment extends Fragment{
             public void onClick(View v) {
                 recyclerView.smoothScrollToPosition(0);
                 scroll = true;
+                top.hide();
             }
         });
 
@@ -98,6 +99,26 @@ public class TimelineFragment extends Fragment{
                     top.show();
                 else
                     top.hide();
+            }
+        });
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(getActivity(), v);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.about:
+                                new UIProcess(getActivity()).ShowAbout();
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                popup.inflate(R.menu.top_menu);
+                popup.show();
             }
         });
 
@@ -141,29 +162,34 @@ public class TimelineFragment extends Fragment{
         protected List<String> doInBackground(String... strings) {
             WebData = strings[0];
             try {
-                for (int x=0;x<200;x++) {
+                int i = 200;
+                for (int x = 0; x < 200; x++) {
                     start = WebData.indexOf("<tr>");
-                    end = WebData.indexOf("</tr>",start)+5;
-                    String table = WebData.substring(start,end);
+                    end = WebData.indexOf("</tr>", start) + 5;
+                    String table = WebData.substring(start, end);
                     int a = table.indexOf("uploads/");
-                    int b = table.indexOf(".pdf",a)+4;
-                    int c = table.indexOf("title=")+7;
-                    int d = table.indexOf("\">",c);
-                    int e = table.lastIndexOf("solid;\">")+8;
+                    int b = table.indexOf(".pdf", a) + 4;
+                    int c = table.indexOf("title=") + 7;
+                    int d = table.indexOf("\">", c);
+                    int e = table.lastIndexOf("solid;\">") + 8;
                     int f = table.lastIndexOf("</td>");
-                    if (a<b & c<d & e<f) {
-                        mLink.add("http://www.nu.ac.bd/"+table.substring(a,b));
-                        mData.add(table.substring(c,d));
-                        mDate.add(table.substring(e,f));
-                    } else if (a>b){
-                        b = table.indexOf(".txt",a);
-                        Log.println(Log.ASSERT,"Value",a+" - "+b);
-                        if (a<b) {
-                            mLink.add("http://www.nu.ac.bd/"+table.substring(a,b));
-                            mData.add(table.substring(c,d));
-                            mDate.add(table.substring(e,f));
+                    if (a < b & c < d & e < f) {
+                        mLink.add("http://www.nu.ac.bd/" + table.substring(a, b));
+                        mData.add(table.substring(c, d));
+                        mDate.add(table.substring(e, f));
+                        String position = String.valueOf(i - x);
+                        //myRef.child("Notice").child(position).child("Title").setValue(table.substring(c,d));
+                        //myRef.child("Notice").child(position).child("Date").setValue(table.substring(e,f));
+                        //myRef.child("Notice").child(position).child("Link").setValue(table.substring(a,b));
+                    } else if (a > b) {
+                        b = table.indexOf(".txt", a);
+                        Log.println(Log.ASSERT, "Value", a + "-" + b + "-" + c + "-" + d + "-" + e + "-" + f);
+                        if (a < b) {
+                            mLink.add("http://www.nu.ac.bd/" + table.substring(a, b));
+                            mData.add(table.substring(c, d));
+                            mDate.add(table.substring(e, f));
                         }
-                    } else  {
+                    } else {
                         mData.add("Error");
                         mDate.add("Error");
                         mLink.add("Error");
@@ -183,14 +209,29 @@ public class TimelineFragment extends Fragment{
             if (response != null) {
                 try {
                     Shimmer();
-                    Log.println(Log.ASSERT,"Response",response.get(0));
+                    Log.println(Log.ASSERT, "Response", response.get(0));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.println(Log.ASSERT,"JSONException",e.toString());
+                    Log.println(Log.ASSERT, "JSONException", e.toString());
                 }
             }
         }
     }
+
+    private void writeToFile(String content,String name) {
+        try {
+            if (Final.Path().exists()) {
+                Final.Path().createNewFile();
+            }
+            FileWriter writer = new FileWriter(Final.Path()+"/txt/"+name+".txt");
+            writer.append(content);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            Log.println(Log.ASSERT,"ERROR",e.toString());
+        }
+    }
+
     private void Shimmer() {
         shimmerFrameLayout.stopShimmer();
         shimmerFrameLayout.setVisibility(View.GONE);
@@ -198,6 +239,8 @@ public class TimelineFragment extends Fragment{
         recyclerView.setVisibility(View.VISIBLE);
         if (refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
+        writeToFile(mData.toString(),"mData");
+        writeToFile(mDate.toString(),"mDate");
+        writeToFile(mLink.toString(),"mLink");
     }
-
 }

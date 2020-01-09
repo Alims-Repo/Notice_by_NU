@@ -1,21 +1,19 @@
 package com.alim.cse.noticebynu.Fragment;
 
 import android.os.Bundle;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.alim.cse.noticebynu.R;
 
-public class NotificationFragment extends Fragment {
+public class SyllabusFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_notification, container, false);
-
-        return rootView;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_syllabus, container, false);
     }
 
 }

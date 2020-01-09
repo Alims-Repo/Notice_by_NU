@@ -2,39 +2,27 @@ package com.alim.cse.noticebynu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.alim.cse.noticebynu.Database.AppSettings;
-import com.alim.cse.noticebynu.Fragment.NotificationFragment;
+import com.alim.cse.noticebynu.Fragment.SavedFragment;
 import com.alim.cse.noticebynu.Fragment.SettingsFragment;
-import com.alim.cse.noticebynu.Fragment.TimelineFragment;
-import com.alim.cse.noticebynu.Process.UIProcess;
-import com.alim.cse.noticebynu.Services.Background;
-import com.alim.cse.noticebynu.Services.Downloader;
+import com.alim.cse.noticebynu.Fragment.SyllabusFragment;
+import com.alim.cse.noticebynu.Fragment.UpdatesFragment;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import java.io.File;
 
-public class MainActivity extends AppCompatActivity implements Downloader.Callbacks, Updater.Callbacks {
+public class MainActivity extends AppCompatActivity implements Updater.Callbacks {
 
     static int pos = 0;
     AppSettings appSettings;
     BottomNavigationView bottomNavigationView;
     Fragment fragment = null;
-    TextView top;
-    ImageView menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,27 +45,23 @@ public class MainActivity extends AppCompatActivity implements Downloader.Callba
         setContentView(R.layout.activity_main);
 
         //startService(new Intent(this, Background.class));
-        fragment = new TimelineFragment();
+        fragment = new UpdatesFragment();
         bottomNavigationView = findViewById(R.id.bottom_nav);
-        menu = findViewById(R.id.menu);
-        top = findViewById(R.id.app_bar_text);
-        Downloader downloader = new Downloader(this,"http://www.nu.ac.bd","html");
-        downloader.registerClient(this);
-        //downloader.new DownloadTask().execute();
 
         switch (pos) {
             case 0:
-                top.setText("Timeline");
-                fragment = new TimelineFragment();
-                bottomNavigationView.setSelectedItemId(R.id.timeline);
+                fragment = new UpdatesFragment();
+                bottomNavigationView.setSelectedItemId(R.id.updates);
                 break;
             case 1:
-                top.setText("Notifications");
-                fragment = new NotificationFragment();
-                bottomNavigationView.setSelectedItemId(R.id.notification);
+                fragment = new SyllabusFragment();
+                bottomNavigationView.setSelectedItemId(R.id.syllabus);
                 break;
             case 2:
-                top.setText("Settings");
+                fragment = new SavedFragment();
+                bottomNavigationView.setSelectedItemId(R.id.saved);
+                break;
+            case 3:
                 fragment = new SettingsFragment();
                 bottomNavigationView.setSelectedItemId(R.id.settings);
                 break;
@@ -88,20 +72,21 @@ public class MainActivity extends AppCompatActivity implements Downloader.Callba
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
-                            case R.id.timeline:
-                                fragment = new TimelineFragment();
-                                top.setText("Timeline");
+                            case R.id.updates:
+                                fragment = new UpdatesFragment();
                                 pos = 0;
                                 break;
-                            case R.id.notification:
-                                fragment = new NotificationFragment();
-                                top.setText("Notifications");
+                            case R.id.syllabus:
+                                fragment = new SyllabusFragment();
                                 pos = 1;
+                                break;
+                            case R.id.saved:
+                                fragment = new SavedFragment();
+                                pos = 2;
                                 break;
                             case R.id.settings:
                                 fragment = new SettingsFragment();
-                                top.setText("Settings");
-                                pos = 2;
+                                pos = 3;
                                 break;
                         }
                         FragmentStarter();
@@ -117,40 +102,14 @@ public class MainActivity extends AppCompatActivity implements Downloader.Callba
                     }
                 });
 
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(MainActivity.this, v);
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.about:
-                                new UIProcess(MainActivity.this).ShowAbout();
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                popup.inflate(R.menu.top_menu);
-                popup.show();
-            }
-        });
         FragmentStarter();
     }
 
     private void FragmentStarter() {
-        FragmentManager manager = getFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.container, fragment);
         transaction.commit();
-    }
-
-    @Override
-    public void updateClient(File file) {
-        Snackbar.make(this.findViewById(R.id.main),
-                Html.fromHtml("<font color=\"#ffffff\">Downloaded</font>"),
-                Snackbar.LENGTH_INDEFINITE).show();
     }
 
     @Override

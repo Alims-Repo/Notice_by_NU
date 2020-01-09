@@ -27,6 +27,8 @@
         <item name="icon_color">@color/colorWhite</item>
         <item name="textcolor">@color/colorWhite</item>
         <item name="chipStyle">@style/Chip_Style</item>
+        <item name="materialCardViewStyle">@style/Card_view</item>
+        <item name="android:windowBackground">@color/colorBlack</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
 
@@ -54,6 +56,10 @@
         <item name="android:textColor">@color/text_chip_color</item>
         <item name="checkedIconVisible">true</item>
         <item name="checkedIcon">@drawable/ic_checked</item>
+    </style>
+
+    <style name="Card_view" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/colorDarkGray</item>
     </style>
 
 </resources>

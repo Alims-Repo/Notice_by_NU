@@ -6,7 +6,11 @@ import java.io.File;
 @SuppressLint("SdCardPath")
 public class Final {
 
-    public File Path() {
+    public static File Path() {
+        return new File("/sdcard/Notice by NU");
+    }
+
+    public File ApkPath() {
         return new File("/sdcard/Notice by NU/Application/Notice by NU.apk");
     }
 

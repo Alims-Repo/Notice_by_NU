@@ -6,6 +6,10 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.util.Log;
+
+import com.alim.cse.noticebynu.Database.AppSettings;
+import com.alim.cse.noticebynu.Database.OfflineData;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,20 +20,24 @@ import java.net.URL;
 
 public class Downloader {
 
+    String Name;
     private String URL;
     private String type;
     private Context context;
     private Callbacks callbacks;
 
-    public Downloader(Context context, String URL, String type) {
+    public Downloader(Context context, String URL, String type, String Name) {
         this.context = context;
         this.type = type;
+        this.Name = Name;
         this.URL = URL;
     }
 
     public class DownloadTask extends AsyncTask<String, Integer, String> {
 
         private PowerManager.WakeLock mWakeLock;
+        AppSettings appSettings = new AppSettings(context);
+        OfflineData offlineData = new OfflineData(context);
 
         @Override
         protected String doInBackground(String... sUrl) {
@@ -50,9 +58,15 @@ public class Downloader {
 
                 File myDirectory = new File(Environment.getExternalStorageDirectory(), "/Notice by NU/"+type);
                 if(!myDirectory.exists())
-                    myDirectory.mkdirs();
+                    myDirectory.mkdir();
 
-                output = new FileOutputStream(myDirectory+"/temp."+type);
+                if (appSettings.getAUTOSAVE()) {
+                    int last = offlineData.getLast();
+                    output = new FileOutputStream(myDirectory+"/"+last+"."+type);
+                    offlineData.setNAME(Name);
+                }
+                else
+                    output = new FileOutputStream(myDirectory+"/temp."+type);
 
                 byte data[] = new byte[4096];
                 long total = 0;
@@ -98,18 +112,24 @@ public class Downloader {
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
+            callbacks.updateClient(false,progress[0],null);
         }
 
         @Override
         protected void onPostExecute(String result) {
             mWakeLock.release();
-            File file = new File("/sdcard/Notice by NU/"+type+"/temp."+type);
-            callbacks.updateClient(file);
+            File file;
+            if (appSettings.getAUTOSAVE()) {
+                int last = offlineData.getLast()-1;
+                file = new File("/sdcard/Notice by NU/" + type + "/" + last + "." + type);
+            } else
+                file = new File("/sdcard/Notice by NU/"+type+"/temp."+type);
+            callbacks.updateClient(true,100,file);
         }
     }
 
     public interface Callbacks{
-        void updateClient(File file);
+        void updateClient(boolean done, int pro ,File file);
     }
 
     public void registerClient(Activity activity){

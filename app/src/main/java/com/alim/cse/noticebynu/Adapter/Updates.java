@@ -1,25 +1,29 @@
 package com.alim.cse.noticebynu.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alim.cse.noticebynu.Interfaces.FetchData;
 import com.alim.cse.noticebynu.R;
+import com.alim.cse.noticebynu.ViewerActivity;
 
 import java.util.List;
 
-public class Timeline extends RecyclerView.Adapter<Timeline.MyViewHolder>  {
+public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
 
-    TextView text;
-    TextView text_date;
-    List<String> mDataset;
-    List<String> mDataDate;
-    List<String> mDataLink;
+    private TextView text;
+    private boolean offline;
+    private CardView cardView;
+    private TextView text_date;
+    private List<String> mDataset;
+    private List<String> mDataDate;
+    private List<String> mDataLink;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public MyViewHolder(View view) {
@@ -27,17 +31,18 @@ public class Timeline extends RecyclerView.Adapter<Timeline.MyViewHolder>  {
         }
     }
 
-    public Timeline(List<String> Data, List<String> Date, List<String> Link) {
+    public Updates(List<String> Data, List<String> Date, List<String> Link, boolean offline) {
         this.mDataset = Data;
         this.mDataDate = Date;
         this.mDataLink = Link;
+        this.offline = offline;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.timeline_layout, parent, false);
+                .inflate(R.layout.updates_layout, parent, false);
         return new MyViewHolder(itemView);
     }
 
@@ -48,10 +53,22 @@ public class Timeline extends RecyclerView.Adapter<Timeline.MyViewHolder>  {
         final View rootView = holder.itemView;
         final Context context = holder.itemView.getContext();
 
+        cardView = rootView.findViewById(R.id.card_view);
         text = rootView.findViewById(R.id.text);
         text_date = rootView.findViewById(R.id.text_date);
         text.setText(mDataset.get(position));
         text_date.setText(mDataDate.get(position));
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ViewerActivity.class);
+                intent.putExtra("OFFLINE",offline);
+                intent.putExtra("PDF_NAME",mDataset.get(position));
+                intent.putExtra("PDF_LINK", mDataLink.get(position));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
