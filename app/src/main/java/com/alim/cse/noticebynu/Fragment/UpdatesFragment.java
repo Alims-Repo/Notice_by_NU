@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+
 import com.alim.cse.noticebynu.Adapter.Updates;
 import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.Process.UIProcess;
@@ -33,11 +35,11 @@ import java.util.List;
 
 public class UpdatesFragment extends Fragment{
 
-    int pos = 40;
     int start, end;
     String WebData;
-    Boolean scroll = false;
     ImageView menu;
+    Boolean scroll = false;
+    ProgressBar progressBar;
     FloatingActionButton top;
     SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
@@ -58,6 +60,7 @@ public class UpdatesFragment extends Fragment{
         top = rootView.findViewById(R.id.go_top);
         menu = rootView.findViewById(R.id.menu);
         refreshLayout = rootView.findViewById(R.id.refresh);
+        progressBar = rootView.findViewById(R.id.progress);
         recyclerView = rootView.findViewById(R.id.recycle_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -65,9 +68,10 @@ public class UpdatesFragment extends Fragment{
         mAdapter = new Updates(mData, mDate, mLink, false);
         recyclerView.setVisibility(View.GONE);
         recyclerView.setAdapter(mAdapter);
-        if (mData.isEmpty())
+        if (mData.isEmpty()) {
+            progressBar.setVisibility(View.VISIBLE);
             new ParseURL().execute(Final.LINK());
-        else
+        } else
             Shimmer();
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -76,6 +80,7 @@ public class UpdatesFragment extends Fragment{
                 recyclerView.setVisibility(View.GONE);
                 shimmerFrameLayout.setVisibility(View.VISIBLE);
                 shimmerFrameLayout.startShimmer();
+                progressBar.setVisibility(View.VISIBLE);
                 new ParseURL().execute(Final.LINK());
             }
         });
@@ -125,22 +130,28 @@ public class UpdatesFragment extends Fragment{
         return rootView;
     }
 
-    public class ParseURL extends AsyncTask<String, Void, String> {
+    public class ParseURL extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... strings) {
             try {
-                Log.println(Log.ASSERT, "HTML","Connecting to [" + strings[0] + "]");
+                publishProgress(0);
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(strings[0]);
                 HttpResponse response = httpClient.execute(httpGet);
                 HttpEntity httpEntity = response.getEntity();
-                Log.println(Log.ASSERT, "HTML","Connected");
+                publishProgress(30);
                 return EntityUtils.toString(httpEntity);
             } catch (Exception e) {
                 Log.println(Log.ASSERT, "ERROR", e.toString());
                 return null;
             }
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progressBar.setProgress(values[0]);
         }
 
         @Override
@@ -153,16 +164,18 @@ public class UpdatesFragment extends Fragment{
                     e.printStackTrace();
                     Log.println(Log.ASSERT,"JSONException",e.toString());
                 }
-            }
+            } else
+                SetError();
         }
     }
 
-    private class GetArray extends AsyncTask<String, Void, List<String>> {
+    private class GetArray extends AsyncTask<String, Integer, List<String>> {
         @Override
         protected List<String> doInBackground(String... strings) {
             WebData = strings[0];
             try {
                 int i = 200;
+                publishProgress(70);
                 for (int x = 0; x < 200; x++) {
                     start = WebData.indexOf("<tr>");
                     end = WebData.indexOf("</tr>", start) + 5;
@@ -196,11 +209,18 @@ public class UpdatesFragment extends Fragment{
                     }
                     WebData = WebData.substring(end);
                 }
+                publishProgress(100);
                 return mData;
             } catch (Exception e) {
                 Log.println(Log.ASSERT, "ERROR", e.toString());
                 return null;
             }
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progressBar.setProgress(values[0]);
         }
 
         @Override
@@ -214,33 +234,25 @@ public class UpdatesFragment extends Fragment{
                     e.printStackTrace();
                     Log.println(Log.ASSERT, "JSONException", e.toString());
                 }
+            } else {
+                SetError();
             }
-        }
-    }
-
-    private void writeToFile(String content,String name) {
-        try {
-            if (Final.Path().exists()) {
-                Final.Path().createNewFile();
-            }
-            FileWriter writer = new FileWriter(Final.Path()+"/txt/"+name+".txt");
-            writer.append(content);
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            Log.println(Log.ASSERT,"ERROR",e.toString());
         }
     }
 
     private void Shimmer() {
         shimmerFrameLayout.stopShimmer();
+        progressBar.setVisibility(View.INVISIBLE);
         shimmerFrameLayout.setVisibility(View.GONE);
         mAdapter.notifyDataSetChanged();
         recyclerView.setVisibility(View.VISIBLE);
         if (refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
-        writeToFile(mData.toString(),"mData");
-        writeToFile(mDate.toString(),"mDate");
-        writeToFile(mLink.toString(),"mLink");
+    }
+
+    private void SetError() {
+        shimmerFrameLayout.stopShimmer();
+        progressBar.setVisibility(View.INVISIBLE);
+        shimmerFrameLayout.setVisibility(View.GONE);
     }
 }

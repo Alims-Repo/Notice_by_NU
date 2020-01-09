@@ -6,9 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.SavedFragment">
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        style="@style/Card_view"
         android:elevation="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
@@ -23,7 +24,7 @@
             app:tabSelectedTextColor="?attr/icon_color"
             app:tabTextColor="?attr/textcolor"/>
 
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_page"

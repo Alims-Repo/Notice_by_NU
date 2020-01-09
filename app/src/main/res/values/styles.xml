@@ -12,6 +12,7 @@
         <item name="icon_color">@color/colorAccent</item>
         <item name="textcolor">@color/colorBlack</item>
         <item name="chipStyle">@style/Chip_Style</item>
+        <item name="Cardcolor">@color/colorWhite</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
 
@@ -27,7 +28,7 @@
         <item name="icon_color">@color/colorWhite</item>
         <item name="textcolor">@color/colorWhite</item>
         <item name="chipStyle">@style/Chip_Style</item>
-        <item name="materialCardViewStyle">@style/Card_view</item>
+        <item name="Cardcolor">@color/colorDarkGray</item>
         <item name="android:windowBackground">@color/colorBlack</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
@@ -59,7 +60,7 @@
     </style>
 
     <style name="Card_view" parent="Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/colorDarkGray</item>
+        <item name="cardBackgroundColor">?attr/Cardcolor</item>
     </style>
 
 </resources>
