@@ -28,8 +28,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +74,12 @@ public class UpdatesFragment extends Fragment{
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
-            //new ParseURL().execute(Final.LINK());
+            new ParseURL().execute(Final.LINK());
+            /*try {
+                new GetArray().execute(getStringFromFile("/sdcard/Notice by NU/html/9.txt"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
         } else
             Shimmer();
 
@@ -177,12 +188,11 @@ public class UpdatesFragment extends Fragment{
                         mLink.add("http://www.nu.ac.bd/" + table.substring(a, b));
                         mData.add(table.substring(c, d));
                         mDate.add(table.substring(e, f));
-                        String position = String.valueOf(i - x);
                         //myRef.child("Notice").child(position).child("Title").setValue(table.substring(c,d));
                         //myRef.child("Notice").child(position).child("Date").setValue(table.substring(e,f));
                         //myRef.child("Notice").child(position).child("Link").setValue(table.substring(a,b));
                     } else if (a > b) {
-                        b = table.indexOf(".txt", a);
+                        b = table.indexOf(".txt", a)+4;
                         Log.println(Log.ASSERT, "Value", a + "-" + b + "-" + c + "-" + d + "-" + e + "-" + f);
                         if (a < b) {
                             mLink.add("http://www.nu.ac.bd/" + table.substring(a, b));
@@ -239,5 +249,31 @@ public class UpdatesFragment extends Fragment{
         shimmerFrameLayout.stopShimmer();
         progressBar.setVisibility(View.INVISIBLE);
         shimmerFrameLayout.setVisibility(View.GONE);
+    }
+
+    public static String convertStreamToString(InputStream is) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        Boolean firstLine = true;
+        while ((line = reader.readLine()) != null) {
+            if(firstLine){
+                sb.append(line);
+                firstLine = false;
+            } else {
+                sb.append("\n").append(line);
+            }
+        }
+        reader.close();
+        return sb.toString();
+    }
+
+    public static String getStringFromFile (String filePath) throws IOException {
+        File fl = new File(filePath);
+        FileInputStream fin = new FileInputStream(fl);
+        String ret = convertStreamToString(fin);
+        //Make sure you close all streams.
+        fin.close();
+        return ret;
     }
 }

@@ -2,11 +2,14 @@ package com.alim.cse.noticebynu.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.alim.cse.noticebynu.R;
@@ -18,7 +21,9 @@ public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
     private TextView text;
     private boolean offline;
     private CardView cardView;
+    private TextView Type_text;
     private TextView text_date;
+    private ImageView Type_image;
     private List<String> mDataset;
     private List<String> mDataDate;
     private List<String> mDataLink;
@@ -60,27 +65,35 @@ public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
         final View rootView = holder.itemView;
         final Context context = holder.itemView.getContext();
 
+        Type_text = rootView.findViewById(R.id.type_text);
+        Type_image = rootView.findViewById(R.id.type_image);
         cardView = rootView.findViewById(R.id.card_view);
         text = rootView.findViewById(R.id.text);
         text_date = rootView.findViewById(R.id.text_date);
         text.setText(mDataset.get(position));
         text_date.setText(mDataDate.get(position));
+        final String Link = mDataLink.get(position);
+        final String Extension = mDataLink.get(position).substring(Link.length()-3);
+        if (Extension.equals("zip")) {
+            Type_image.setImageDrawable(context.getResources().getDrawable(R.drawable.zip));
+            Type_text.setText("ZIP\nfile\nformat");
+        } else if (Extension.equals("txt")) {
+            Log.println(Log.ASSERT,"TYPE",Extension);
+            Type_image.setImageDrawable(context.getResources().getDrawable(R.drawable.text));
+            Type_text.setText("TEXT\nfile\nformat");
+        }
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String Link = mDataLink.get(position);
-                String Extension = Link.substring(Link.length()-3);
-                if (Extension.equals("pdf")) {
-                    Intent intent = new Intent(context, ViewerActivity.class);
-                    intent.putExtra("OFFLINE",offline);
-                    intent.putExtra("FROM","OTHER");
-                    intent.putExtra("PDF_NAME",mDataset.get(position));
-                    intent.putExtra("PDF_LINK", Link);
-                    context.startActivity(intent);
-                } else {
-
-                }
+                Intent intent = new Intent(context, ViewerActivity.class);
+                intent.putExtra("OFFLINE",offline);
+                intent.putExtra("FROM","OTHER");
+                intent.putExtra("TYPE",Extension);
+                intent.putExtra("NAME",mDataset.get(position));
+                intent.putExtra("LINK", Link);
+                Log.println(Log.ASSERT,"TYPE",Link);
+                context.startActivity(intent);
             }
         });
     }

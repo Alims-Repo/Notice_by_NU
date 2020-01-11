@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.alim.cse.noticebynu.Database.AppSettings;
 import com.alim.cse.noticebynu.Process.PathFinder;
@@ -114,13 +115,13 @@ public class ViewerActivity extends AppCompatActivity implements Downloader.Call
                 ViewPDF(location);
             } else {
                 Log.println(Log.ASSERT,"bundle","Not Null");
-                Link = bundle.getString("PDF_LINK");
-                Name = bundle.getString("PDF_NAME");
+                Link = bundle.getString("LINK");
+                Name = bundle.getString("NAME");
                 File file;
                 if (bundle.getBoolean("OFFLINE")) {
                     file = new File(Link);
                     ViewPDF(file);
-                } else {
+                } else if (bundle.getString("TYPE","pdf").equals("pdf")){
                     downloader = new Downloader(this, Link,"pdf",Name);
                     downloader.registerClient(this);
                     downloader.new DownloadTask().execute();

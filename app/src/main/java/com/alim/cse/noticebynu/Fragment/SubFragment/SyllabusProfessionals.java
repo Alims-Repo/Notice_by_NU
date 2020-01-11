@@ -73,14 +73,14 @@ public class SyllabusProfessionals extends Fragment {
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
-            //new SyllabusHonours.GetArray().doInBackground("");
+            new ParseURL().execute(Final.PROFS());
 
-            try {
+            /*try {
                 //new ParseURL().execute(Final.PROFS());
                 new GetArray().execute(getStringFromFile("/sdcard/Notice by NU/html/11.txt"));
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
         } else
             Shimmer();
 
@@ -166,25 +166,27 @@ public class SyllabusProfessionals extends Fragment {
             WebData = strings[0];
             for (int x=0;x<200;x++) {
                 try {
-                    start = WebData.indexOf("<tr class=\"sectiontableentry1\">");
+                    start = WebData.indexOf("<tr class=\"sectiontableentry");
                     end = WebData.indexOf("</tr>", start) + 5;
                     if (start<end) {
                         String Temp = WebData.substring(start,end);
-                        int a = Temp.indexOf("href=\"uploads")+6;
-                        int b = 0;
-                        if (Temp.contains(".pdf\">"))
-                            b = Temp.indexOf(".pdf\">",a)+4;
-                        else if (Temp.contains(".zip\">"))
-                            b = Temp.indexOf(".zip\">")+4;
-                        String title = Temp.substring(b+2);
-                        int c = title.indexOf("</a>");
-                        int d = Temp.indexOf("date\">",b)+6;
-                        int e = Temp.indexOf("</td>",d);
-                        mLink.add("http://www.nu.ac.bd/"+Temp.substring(a,b));
-                        mData.add(title.substring(0,c));
-                        mDate.add(Temp.substring(d,e));
-                        //Log.println(Log.ASSERT,"TEMP",title.substring(0,c-4));
-                        WebData = WebData.substring(end);
+                        if (Temp.contains("href=\"uploads")) {
+                            int a = Temp.indexOf("href=\"uploads") + 6;
+                            int b = 0;
+                            if (Temp.contains(".pdf\">"))
+                                b = Temp.indexOf(".pdf\">", a) + 4;
+                            else if (Temp.contains(".zip\">"))
+                                b = Temp.indexOf(".zip\">") + 4;
+                            String title = Temp.substring(b + 2);
+                            int c = title.indexOf("</a>");
+                            int d = Temp.indexOf("date\">", b) + 6;
+                            int e = Temp.indexOf("</td>", d);
+                            mLink.add("http://www.nu.ac.bd/" + Temp.substring(a, b));
+                            mData.add(title.substring(0, c));
+                            mDate.add(Temp.substring(d, e));
+                            //Log.println(Log.ASSERT,"TEMP",title.substring(0,c-4));
+                            WebData = WebData.substring(end);
+                        }
                     }
                 } catch (Exception e){
                     Log.println(Log.ASSERT,"ex",e.toString());

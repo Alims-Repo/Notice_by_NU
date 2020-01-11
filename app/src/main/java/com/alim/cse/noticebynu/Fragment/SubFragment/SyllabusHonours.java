@@ -66,13 +66,14 @@ public class SyllabusHonours extends Fragment {
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
+            new ParseURL().execute(Final.HONS());
 
-            try {
+            /*try {
                 //new ParseURL().execute(Final.HONS());
                 new GetArray().execute(getStringFromFile("/sdcard/Notice by NU/html/10.txt"));
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
             //new ParseURL().execute(Final.HONS());
         } else
             Shimmer();
@@ -160,23 +161,31 @@ public class SyllabusHonours extends Fragment {
                     end = WebData.indexOf("</tr>", start) + 5;
                     if (start<end) {
                         String table = WebData.substring(start, end);
-                        int b = 0;
-                        int a = table.indexOf("href=\"uploads")+6;
-                        if (table.contains(".pdf"))
-                            b = table.indexOf(".pdf")+4;
-                        else if (table.contains(".zip"))
-                            b = table.indexOf(".zip")+4;
-                        int c = table.indexOf("</a></td>");
-                        String title = table.substring(b+2,c);
-                        title = title.replace("&amp;","&");
-                        String Date = table.substring(c);
-                        int d = Date.indexOf("<td>");
-                        Date = Date.substring(d);
-                        int e = Date.indexOf("</td>");
-                        Date = Date.substring(4,e);
-                        mLink.add("http://www.nu.ac.bd/" + table.substring(a, b));
-                        mData.add(title);
-                        mDate.add(Date);
+                        if (table.contains("href=\"uploads")) {
+                            int b = 0;
+                            int a = table.indexOf("href=\"uploads")+6;
+                            if (table.contains(".pdf"))
+                                b = table.indexOf(".pdf")+4;
+                            else if (table.contains(".zip"))
+                                b = table.indexOf(".zip")+4;
+                            int c = table.indexOf("</a></td>");
+                            String title = table.substring(b+2,c);
+                            title = title.replace("&amp;","&");
+                            String Date = table.substring(c);
+                            int d = Date.indexOf("<td>");
+                            Date = Date.substring(d);
+                            int e = Date.indexOf("</td>");
+                            Date = Date.substring(4,e);
+
+                            mLink.add("http://www.nu.ac.bd/" + table.substring(a, b));
+                            mData.add(title);
+                            mDate.add(Date);
+                            //Log.println(Log.ASSERT,"TABLE 2",title);
+                            //Log.println(Log.ASSERT, "TABLE", table.substring(a,b));
+                        }
+                        //int b = table.indexOf(".pdf", a) + 4;
+                        //if (a>b)
+                          //  b = table.indexOf(".zip")+4;
                         WebData = WebData.substring(end);
                     }
                 } catch (Exception e){

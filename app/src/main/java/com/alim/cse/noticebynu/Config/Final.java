@@ -38,6 +38,10 @@ public class Final {
         return  "http://www.nu.ac.bd/syllabus-degree-pass.php";
     }
 
+    public static String MASTERS() {
+        return "http://www.nu.ac.bd/syllabus-masters.php";
+    }
+
     /*public String HTML_A() {
         return "";
     }
