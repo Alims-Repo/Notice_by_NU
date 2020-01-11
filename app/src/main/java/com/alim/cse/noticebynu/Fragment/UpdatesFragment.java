@@ -41,7 +41,6 @@ public class UpdatesFragment extends Fragment{
     Boolean scroll = false;
     ProgressBar progressBar;
     FloatingActionButton top;
-    SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     ShimmerFrameLayout shimmerFrameLayout;
     private RecyclerView.Adapter mAdapter;
@@ -59,7 +58,6 @@ public class UpdatesFragment extends Fragment{
         shimmerFrameLayout.startShimmer();
         top = rootView.findViewById(R.id.go_top);
         menu = rootView.findViewById(R.id.menu);
-        refreshLayout = rootView.findViewById(R.id.refresh);
         progressBar = rootView.findViewById(R.id.progress);
         recyclerView = rootView.findViewById(R.id.recycle_view);
         recyclerView.setHasFixedSize(true);
@@ -70,20 +68,9 @@ public class UpdatesFragment extends Fragment{
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
-            new ParseURL().execute(Final.LINK());
+            //new ParseURL().execute(Final.LINK());
         } else
             Shimmer();
-
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                recyclerView.setVisibility(View.GONE);
-                shimmerFrameLayout.setVisibility(View.VISIBLE);
-                shimmerFrameLayout.startShimmer();
-                progressBar.setVisibility(View.VISIBLE);
-                new ParseURL().execute(Final.LINK());
-            }
-        });
 
         top.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +167,7 @@ public class UpdatesFragment extends Fragment{
                     start = WebData.indexOf("<tr>");
                     end = WebData.indexOf("</tr>", start) + 5;
                     String table = WebData.substring(start, end);
-                    int a = table.indexOf("uploads/");
+                    int a = table.indexOf("href=\"uploads/")+6;
                     int b = table.indexOf(".pdf", a) + 4;
                     int c = table.indexOf("title=") + 7;
                     int d = table.indexOf("\">", c);
@@ -246,8 +233,6 @@ public class UpdatesFragment extends Fragment{
         shimmerFrameLayout.setVisibility(View.GONE);
         mAdapter.notifyDataSetChanged();
         recyclerView.setVisibility(View.VISIBLE);
-        if (refreshLayout.isRefreshing())
-            refreshLayout.setRefreshing(false);
     }
 
     private void SetError() {

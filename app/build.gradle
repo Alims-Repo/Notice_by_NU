@@ -7,8 +7,8 @@ android {
         applicationId "com.alim.cse.noticebynu"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 3
-        versionName "2.9.4"
+        versionCode 4
+        versionName "2.9.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

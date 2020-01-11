@@ -13,16 +13,28 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="55dp"/>
+        android:layout_marginBottom="0dp"/>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/nav_menu"
-        android:background="?attr/Back"
-        app:itemTextAppearanceActive="@style/ActiveItemTextAppearance"
-        app:itemTextAppearanceInactive="@style/InactiveItemTextAppearance"
-        android:layout_gravity="bottom"/>
+        android:layout_marginStart="10dp"
+        style="@style/Card_view"
+        app:cardCornerRadius="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="3dp"
+        android:layout_gravity="bottom">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/nav_menu"
+            android:background="?attr/Back"
+            app:itemTextAppearanceActive="@style/ActiveItemTextAppearance"
+            app:itemTextAppearanceInactive="@style/InactiveItemTextAppearance"
+            android:layout_gravity="bottom"/>
+
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>

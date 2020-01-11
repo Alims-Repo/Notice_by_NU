@@ -6,13 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.alim.cse.noticebynu.R;
 import com.alim.cse.noticebynu.ViewerActivity;
-
 import java.util.List;
 
 public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
@@ -41,8 +39,17 @@ public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
     // Create new views (invoked by the layout manager)
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.updates_layout, parent, false);
+        final View itemView;
+        if (viewType==0)
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.updates_layout_start, parent, false);
+        else if (viewType+1==mDataset.size())
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.updates_layout_end, parent, false);
+        else
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.updates_layout, parent, false);
+
         return new MyViewHolder(itemView);
     }
 
@@ -62,11 +69,18 @@ public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ViewerActivity.class);
-                intent.putExtra("OFFLINE",offline);
-                intent.putExtra("PDF_NAME",mDataset.get(position));
-                intent.putExtra("PDF_LINK", mDataLink.get(position));
-                context.startActivity(intent);
+                String Link = mDataLink.get(position);
+                String Extension = Link.substring(Link.length()-3);
+                if (Extension.equals("pdf")) {
+                    Intent intent = new Intent(context, ViewerActivity.class);
+                    intent.putExtra("OFFLINE",offline);
+                    intent.putExtra("FROM","OTHER");
+                    intent.putExtra("PDF_NAME",mDataset.get(position));
+                    intent.putExtra("PDF_LINK", Link);
+                    context.startActivity(intent);
+                } else {
+
+                }
             }
         });
     }

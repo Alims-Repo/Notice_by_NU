@@ -26,6 +26,18 @@ public class Final {
         return "http://www.nu.ac.bd";
     }
 
+    public static String HONS() {
+        return "http://www.nu.ac.bd/syllabus-honours.php";
+    }
+
+    public static String PROFS() {
+        return "http://www.nu.ac.bd/syllabus-professionals.php";
+    }
+
+    public static String DEGREE() {
+        return  "http://www.nu.ac.bd/syllabus-degree-pass.php";
+    }
+
     /*public String HTML_A() {
         return "";
     }

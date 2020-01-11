@@ -61,6 +61,11 @@
 
     <style name="Card_view" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">?attr/Cardcolor</item>
+        <item name="cardElevation">5dp</item>
+    </style>
+
+    <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:fontFamily">@font/roboto_bold</item>
     </style>
 
 </resources>

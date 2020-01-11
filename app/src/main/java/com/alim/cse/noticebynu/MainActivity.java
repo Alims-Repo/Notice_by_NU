@@ -8,14 +8,22 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.Database.AppSettings;
 import com.alim.cse.noticebynu.Fragment.SavedFragment;
 import com.alim.cse.noticebynu.Fragment.SettingsFragment;
 import com.alim.cse.noticebynu.Fragment.SyllabusFragment;
 import com.alim.cse.noticebynu.Fragment.UpdatesFragment;
+import com.alim.cse.noticebynu.Services.Downloader;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements Updater.Callbacks {
 

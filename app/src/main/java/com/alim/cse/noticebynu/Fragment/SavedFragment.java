@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import com.alim.cse.noticebynu.Adapter.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.alim.cse.noticebynu.Fragment.SubFragment.SNoticeFragment;
-import com.alim.cse.noticebynu.Fragment.SubFragment.SSyllabusFragment;
+import com.alim.cse.noticebynu.Fragment.SubFragment.SavedNotice;
+import com.alim.cse.noticebynu.Fragment.SubFragment.SavedSyllabus;
 import com.alim.cse.noticebynu.R;
 import com.google.android.material.tabs.TabLayout;
 
@@ -30,8 +30,8 @@ public class SavedFragment extends Fragment {
     }
     private void addTabs(ViewPager viewPager) {
         PagerAdapter adapter = new PagerAdapter(getChildFragmentManager());
-        adapter.addFrag(new SNoticeFragment(), "Notice");
-        adapter.addFrag(new SSyllabusFragment(), "Syllabus");
+        adapter.addFrag(new SavedNotice(), "Notice");
+        adapter.addFrag(new SavedSyllabus(), "Syllabus");
         viewPager.setAdapter(adapter);
     }
 }

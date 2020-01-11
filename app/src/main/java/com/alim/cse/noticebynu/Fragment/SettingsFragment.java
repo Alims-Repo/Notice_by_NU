@@ -127,8 +127,7 @@ public class SettingsFragment extends Fragment implements Updater.Callbacks {
     }
 
     private void Recreate() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             public void run() {
                 Intent i = new Intent(getActivity(), MainActivity.class);
                 i.putExtra("FROM","SETTINGS");
