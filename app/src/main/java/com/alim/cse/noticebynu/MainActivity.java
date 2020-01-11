@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.Database.AppSettings;
@@ -20,6 +21,17 @@ import com.alim.cse.noticebynu.Fragment.SyllabusFragment;
 import com.alim.cse.noticebynu.Fragment.UpdatesFragment;
 import com.alim.cse.noticebynu.Services.Downloader;
 import com.alim.cse.noticebynu.Services.Updater;
+import com.google.ads.mediation.admob.AdMobAdapter;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -27,6 +39,9 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements Updater.Callbacks {
 
+    int click = 0;
+    private RewardedAd rewardedAd;
+    private InterstitialAd mInterstitialAd;
     static int pos = 0;
     AppSettings appSettings;
     BottomNavigationView bottomNavigationView;
@@ -51,6 +66,25 @@ public class MainActivity extends AppCompatActivity implements Updater.Callbacks
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this, "ca-app-pub-9098610474673834~6595925952");
+        mInterstitialAd = new InterstitialAd(this);
+        rewardedAd = new RewardedAd(this, "ca-app-pub-9098610474673834/8245238910");
+        mInterstitialAd.setAdUnitId("ca-app-pub-9098610474673834/2254545634");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+                // Ad successfully loaded.
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(int errorCode) {
+                // Ad failed to load.
+            }
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+
 
         //startService(new Intent(this, Background.class));
         fragment = new UpdatesFragment();
@@ -79,7 +113,46 @@ public class MainActivity extends AppCompatActivity implements Updater.Callbacks
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
+                        if (click%5==0 & rewardedAd.isLoaded()) {
+                            RewardedAdCallback adCallback = new RewardedAdCallback() {
+                                @Override
+                                public void onRewardedAdOpened() {
+                                    // Ad opened.
+                                }
+
+                                @Override
+                                public void onRewardedAdClosed() {
+                                    RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+                                        @Override
+                                        public void onRewardedAdLoaded() {
+                                            // Ad successfully loaded.
+                                        }
+
+                                        @Override
+                                        public void onRewardedAdFailedToLoad(int errorCode) {
+                                            // Ad failed to load.
+                                        }
+                                    };
+                                    rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+                                }
+
+                                @Override
+                                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+
+                                }
+
+                                @Override
+                                public void onRewardedAdFailedToShow(int errorCode) {
+                                    // Ad failed to display.
+                                }
+                            };
+                            rewardedAd.show(MainActivity.this, adCallback);
+                            click++;
+                        } else
+                            click++;
+                        if (mInterstitialAd.isLoaded())
+                            mInterstitialAd.show();
+                            switch (menuItem.getItemId()) {
                             case R.id.updates:
                                 fragment = new UpdatesFragment();
                                 pos = 0;
@@ -109,6 +182,20 @@ public class MainActivity extends AppCompatActivity implements Updater.Callbacks
                         //Do Noting Here...
                     }
                 });
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Toast.makeText(MainActivity.this, "Clicked...", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         FragmentStarter();
     }

@@ -18,90 +18,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Account"
-                android:gravity="center"
-                android:layout_marginTop="5dp"
-                android:textSize="22sp"
-                android:fontFamily="@font/roboto_bold"/>
-
-            <LinearLayout
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_fingerprint"
-                    android:tint="?attr/icon_color"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="User ID"
-                    android:gravity="center"
-                    android:textSize="17sp"
-                    android:fontFamily="@font/roboto_regular"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_sign_up"
-                    android:tint="?attr/icon_color"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Change Name"
-                    android:textSize="17sp"
-                    android:gravity="center"
-                    android:fontFamily="@font/roboto_regular"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_change_password_black_24dp"
-                    android:tint="?attr/icon_color"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Change Password"
-                    android:textSize="17sp"
-                    android:gravity="center"
-                    android:fontFamily="@font/roboto_regular"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="Application"
                 android:gravity="center"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:textSize="22sp"
                 android:fontFamily="@font/roboto_bold"/>
 
@@ -224,31 +143,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Error Report"
-                    android:textSize="17sp"
-                    android:gravity="center"
-                    android:fontFamily="@font/roboto_regular"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/download"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_file_download_black_24dp"
-                    android:tint="?attr/icon_color"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Auto save PDF"
                     android:textSize="17sp"
                     android:gravity="center"
                     android:fontFamily="@font/roboto_regular"/>

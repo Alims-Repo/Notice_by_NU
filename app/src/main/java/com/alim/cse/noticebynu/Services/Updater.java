@@ -94,7 +94,9 @@ public class Updater {
                     String VERSION_NAME = jsonObject.getJSONObject("apkData").getString("versionName");
                     int VERSION_CODE = jsonObject.getJSONObject("apkData").getInt("versionCode");
                     int versionCode = BuildConfig.VERSION_CODE;
-                    if (VERSION_CODE> versionCode)
+                    if (VERSION_CODE<versionCode) {
+                        Toast.makeText(context, "Application Closed...", Toast.LENGTH_SHORT).show();
+                    } else if (VERSION_CODE> versionCode)
                         About(VERSION_NAME);
                     else  {
                         callbacks.updateClient(1);
@@ -255,7 +257,6 @@ public class Updater {
     }
 
     private void About(String LatestVersion_Name) {
-        Log.println(Log.ASSERT,"UIProcess", "got it");
         final Dialog dialog = new Dialog(context, R.style.AlertDialogLight);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);

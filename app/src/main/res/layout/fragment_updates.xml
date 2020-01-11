@@ -26,16 +26,6 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="20dp"/>
 
-        <ImageView
-            android:id="@+id/menu"
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical|end"
-            android:padding="10dp"
-            android:src="@drawable/ic_menu"/>
-
         <ProgressBar
             android:id="@+id/progress"
             android:layout_width="match_parent"

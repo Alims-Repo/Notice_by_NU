@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 
 import com.alim.cse.noticebynu.Adapter.Updates;
 import com.alim.cse.noticebynu.Config.Final;
-import com.alim.cse.noticebynu.Process.UIProcess;
 import com.alim.cse.noticebynu.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,7 +31,6 @@ import org.apache.http.util.EntityUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,7 +41,6 @@ public class UpdatesFragment extends Fragment{
 
     int start, end;
     String WebData;
-    ImageView menu;
     Boolean scroll = false;
     ProgressBar progressBar;
     FloatingActionButton top;
@@ -63,7 +60,6 @@ public class UpdatesFragment extends Fragment{
         shimmerFrameLayout = rootView.findViewById(R.id.shimmer_view_container);
         shimmerFrameLayout.startShimmer();
         top = rootView.findViewById(R.id.go_top);
-        menu = rootView.findViewById(R.id.menu);
         progressBar = rootView.findViewById(R.id.progress);
         recyclerView = rootView.findViewById(R.id.recycle_view);
         recyclerView.setHasFixedSize(true);
@@ -102,26 +98,6 @@ public class UpdatesFragment extends Fragment{
                     top.show();
                 else
                     top.hide();
-            }
-        });
-
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(getActivity(), v);
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.about:
-                                new UIProcess(getActivity()).ShowAbout();
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                popup.inflate(R.menu.top_menu);
-                popup.show();
             }
         });
 
