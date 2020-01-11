@@ -30,8 +30,8 @@ public class SavedFragment extends Fragment {
     }
     private void addTabs(ViewPager viewPager) {
         PagerAdapter adapter = new PagerAdapter(getChildFragmentManager());
-        adapter.addFrag(new SavedNotice(), "Notice");
         adapter.addFrag(new SavedSyllabus(), "Syllabus");
+        adapter.addFrag(new SavedNotice(), "Notice");
         viewPager.setAdapter(adapter);
     }
 }

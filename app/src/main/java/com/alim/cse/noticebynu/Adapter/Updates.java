@@ -2,6 +2,8 @@ package com.alim.cse.noticebynu.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import com.alim.cse.noticebynu.R;
 import com.alim.cse.noticebynu.ViewerActivity;
+
+import java.io.File;
 import java.util.List;
 
 public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
 
+    private  String From;
     private TextView text;
     private boolean offline;
     private CardView cardView;
@@ -34,7 +40,9 @@ public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
         }
     }
 
-    public Updates(List<String> Data, List<String> Date, List<String> Link, boolean offline) {
+    public Updates(List<String> Data, List<String> Date, List<String> Link
+            , boolean offline, String From) {
+        this.From = From;
         this.mDataset = Data;
         this.mDataDate = Date;
         this.mDataLink = Link;
@@ -81,19 +89,43 @@ public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
             Log.println(Log.ASSERT,"TYPE",Extension);
             Type_image.setImageDrawable(context.getResources().getDrawable(R.drawable.text));
             Type_text.setText("TEXT\nfile\nformat");
+        } else if (Extension.equals("ocx") | Extension.contains("doc")) {
+            Log.println(Log.ASSERT,"TYPE",Extension);
+            Type_image.setImageDrawable(context.getResources().getDrawable(R.drawable.text));
+            Type_text.setText("DOCX\nfile\nformat");
         }
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ViewerActivity.class);
-                intent.putExtra("OFFLINE",offline);
-                intent.putExtra("FROM","OTHER");
-                intent.putExtra("TYPE",Extension);
-                intent.putExtra("NAME",mDataset.get(position));
-                intent.putExtra("LINK", Link);
-                Log.println(Log.ASSERT,"TYPE",Link);
-                context.startActivity(intent);
+                if (Extension.equals("ocx") | Extension.contains("docx")) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        File file = new File(mDataLink.get(position));
+                        Uri uri = FileProvider.getUriForFile(context, "com.alim.cse.noticebynu.provider", file);
+                        Log.println(Log.ASSERT,"FILE",uri.toString());
+                        intent.setData(uri);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        try {
+                            context.startActivity(Intent.createChooser(intent, "Open Word document"));
+                        } catch (Exception e) {
+                            Log.println(Log.ASSERT,"UPDATES",e.toString());
+                        }
+                    } catch (Exception e) {
+                        Log.println(Log.ASSERT,"UPDATES",e.toString());
+                    }
+                } else {
+                    Intent intent = new Intent(context, ViewerActivity.class);
+                    intent.putExtra("OFFLINE", offline);
+                    intent.putExtra("FROM", "OTHER");
+                    intent.putExtra("TYPE", Extension);
+                    intent.putExtra("NAME", mDataset.get(position));
+                    intent.putExtra("LINK", Link);
+                    intent.putExtra("LOCATION", From);
+                    Log.println(Log.ASSERT, "TYPE", Link);
+                    context.startActivity(intent);
+                }
             }
         });
     }

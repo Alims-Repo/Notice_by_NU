@@ -69,7 +69,7 @@ public class UpdatesFragment extends Fragment{
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new Updates(mData, mDate, mLink, false);
+        mAdapter = new Updates(mData, mDate, mLink, false,"Notice");
         recyclerView.setVisibility(View.GONE);
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {

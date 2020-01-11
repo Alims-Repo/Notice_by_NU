@@ -44,7 +44,6 @@ public class SyllabusMasters extends Fragment {
     Boolean scroll = false;
     ProgressBar progressBar;
     FloatingActionButton top;
-    SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     ShimmerFrameLayout shimmerFrameLayout;
     private RecyclerView.Adapter mAdapter;
@@ -61,13 +60,12 @@ public class SyllabusMasters extends Fragment {
         shimmerFrameLayout = rootView.findViewById(R.id.shimmer_view_container);
         shimmerFrameLayout.startShimmer();
         top = rootView.findViewById(R.id.go_top);
-        refreshLayout = rootView.findViewById(R.id.refresh);
         progressBar = rootView.findViewById(R.id.progress);
         recyclerView = rootView.findViewById(R.id.recycle_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new Updates(mData, mDate, mLink, false);
+        mAdapter = new Updates(mData, mDate, mLink, false,"Syllabus");
         recyclerView.setVisibility(View.GONE);
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {
@@ -83,17 +81,6 @@ public class SyllabusMasters extends Fragment {
             //new ParseURL().execute(Final.HONS());
         } else
             Shimmer();
-
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                recyclerView.setVisibility(View.GONE);
-                shimmerFrameLayout.setVisibility(View.VISIBLE);
-                shimmerFrameLayout.startShimmer();
-                progressBar.setVisibility(View.VISIBLE);
-                //new ParseURL().execute(Final.DEGREE());
-            }
-        });
 
         top.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,8 +208,6 @@ public class SyllabusMasters extends Fragment {
         shimmerFrameLayout.setVisibility(View.GONE);
         mAdapter.notifyDataSetChanged();
         recyclerView.setVisibility(View.VISIBLE);
-        if (refreshLayout.isRefreshing())
-            refreshLayout.setRefreshing(false);
     }
 
     private void SetError() {

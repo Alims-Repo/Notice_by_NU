@@ -1,31 +1,36 @@
 package com.alim.cse.noticebynu;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alim.cse.noticebynu.Database.AppSettings;
+import com.alim.cse.noticebynu.Process.Compressor;
 import com.alim.cse.noticebynu.Process.PathFinder;
 import com.alim.cse.noticebynu.Services.Downloader;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
+import com.mittsu.markedview.MarkedView;
 import java.io.File;
-import java.nio.file.Path;
-import java.util.Objects;
 
-public class ViewerActivity extends AppCompatActivity implements Downloader.Callbacks {
+public class ViewerActivity extends AppCompatActivity implements Downloader.Callbacks, Compressor.Callbacks {
 
+    TextView loading_text;
+    MarkedView mdView;
     static boolean night;
     String Link;
     String Name;
@@ -76,7 +81,11 @@ public class ViewerActivity extends AppCompatActivity implements Downloader.Call
         back = findViewById(R.id.back);
         frameLayout = findViewById(R.id.progress);
         progressBar = findViewById(R.id.progressbar);
+        mdView = findViewById(R.id.md_view);
+        loading_text = findViewById(R.id.loading_text);
+
         pdfView.setVisibility(View.GONE);
+        mdView.setVisibility(View.GONE);
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -108,43 +117,91 @@ public class ViewerActivity extends AppCompatActivity implements Downloader.Call
                 }, 200);
             }
         });
-        
+
         Bundle bundle = getIntent().getExtras();
         if (bundle!=null) {
-            if (bundle.getString("FROM").equals("SELF")) {
-                ViewPDF(location);
-            } else {
-                Log.println(Log.ASSERT,"bundle","Not Null");
+            if (bundle.getString("FROM","").equals("SELF")) {
+                if (location.toString().contains(".pdf"))
+                    ViewPDF(location);
+                else if (location.toString().contains(".text"))
+                    TextVIEW(location);
+            } else if (bundle.getString("FROM","").equals("OTHER")) {
+                String TYPE = bundle.getString("TYPE","");
                 Link = bundle.getString("LINK");
                 Name = bundle.getString("NAME");
                 File file;
                 if (bundle.getBoolean("OFFLINE")) {
                     file = new File(Link);
                     ViewPDF(file);
-                } else if (bundle.getString("TYPE","pdf").equals("pdf")){
-                    downloader = new Downloader(this, Link,"pdf",Name);
+                } else {
+                    String From = bundle.getString("LOCATION");
+                    downloader = new Downloader(this, Link,TYPE,Name,From);
                     downloader.registerClient(this);
                     downloader.new DownloadTask().execute();
+                }
+            } else {
+                try {
+                    Uri uri = intent.getData();
+                    Log.println(Log.ASSERT,"URI",uri.toString());
+                    //File file =  new File(PathFinder.getPath(this, uri));
+                    File file = new File(PathFinder.getPath(this,uri));
+                    Log.println(Log.ASSERT,"FILE",file.toString());
+                    ViewPDF(file);
+                } catch (Exception e) {
+                    Log.println(Log.ASSERT,"Exception", e.toString());
                 }
             }
         } else if (Intent.ACTION_VIEW.equals(action)) {
             if ("application/pdf".equals(type)) {
-                PathFinder realPath = new PathFinder();
-                String text = intent.getData().toString();
-                int pos = text.indexOf("/file%3A%2F%2F%2Fstorage%2Femulated%2F0%2F")+42;
-                ViewPDF(new File(realPath.getPath(text.substring(pos))));
+                Uri path = intent.getData();
+                //File file =  new File(PathFinder.getPath(this, path));
+                File file = new File(PathFinder.getPath(this, path));
+                Log.println(Log.ASSERT,"URI",path.toString());
+                Log.println(Log.ASSERT,"FILE",file.toString());
+                try {
+                    ViewPDF(file);
+                } catch (Exception e) {
+
+                }
+            } else if ("text/plain".equals(type)) {
+                Uri path = intent.getData();
+                //File file =  new File(PathFinder.getPath(this, path));
+                File file = new File(PathFinder.getPath(this, path));
+                Log.println(Log.ASSERT,"URI",path.toString());
+                Log.println(Log.ASSERT,"FILE",file.toString());
+                try {
+                    TextVIEW(file);
+                } catch (Exception e) {
+
+                }
             }
         }
     }
 
     @Override
-    public void updateClient(boolean done, int pro, File file) {
+    public void updateClient(String type, boolean done, int pro, File file) {
         if (done) {
-            Log.println(Log.ASSERT,"LINK",file.toString());
-            ViewPDF(file);
+            if (type.equals("pdf"))
+                ViewPDF(file);
+            else if (type.equals("txt"))
+                TextVIEW(file);
+            else {
+                Bundle bundle = getIntent().getExtras();
+                String From = bundle.getString("LOCATION");
+                loading_text.setText("Decompressing ZIP...");
+                Compressor compressor = new Compressor(file,From);
+                compressor.registerClient(this);
+                compressor.new Unzip().execute();
+            }
         } else {
             progressBar.setProgress(pro);
         }
+    }
+
+    private void TextVIEW(File file) {
+        frameLayout.setVisibility(View.GONE);
+        mdView.setVisibility(View.VISIBLE);
+        mdView.loadMDFile(file);
     }
 
     private void ViewPDF(File file) {
@@ -164,5 +221,32 @@ public class ViewerActivity extends AppCompatActivity implements Downloader.Call
                 .nightMode(night)
                 .pageFitPolicy(FitPolicy.WIDTH)
                 .load();
+    }
+
+    @Override
+    public void updateClient(boolean done, int pro, File file) {
+        if (done) {
+            String name = file.toString();
+            name = name.substring(name.length()-4);
+            if (name.equals("docx")) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Uri uri = FileProvider.getUriForFile(this, "com.alim.cse.noticebynu.provider", file);
+                    Log.println(Log.ASSERT,"FILE",uri.toString());
+                    intent.setData(uri);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    try {
+                        startActivity(Intent.createChooser(intent, "Open Word document"));
+                    } catch (Exception e) {
+                        Log.println(Log.ASSERT,"UPDATES",e.toString());
+                    }
+                } catch (Exception e) {
+                    Log.println(Log.ASSERT,"UPDATES",e.toString());
+                }
+            }
+            ViewPDF(file);
+        } else
+            progressBar.setProgress(pro);
     }
 }

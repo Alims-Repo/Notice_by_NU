@@ -7,7 +7,7 @@ import java.io.File;
 public class Final {
 
     public static File Path() {
-        return new File("/sdcard/Notice by NU");
+        return new File("/sdcard/Android/data/com.alim.cse.noticebynu");
     }
 
     public File ApkPath() {
@@ -41,16 +41,4 @@ public class Final {
     public static String MASTERS() {
         return "http://www.nu.ac.bd/syllabus-masters.php";
     }
-
-    /*public String HTML_A() {
-        return "";
-    }
-
-    public String HTML_B() {
-        return "";
-    }
-
-    public String HTML_C() {
-        return "";
-    }*/
 }

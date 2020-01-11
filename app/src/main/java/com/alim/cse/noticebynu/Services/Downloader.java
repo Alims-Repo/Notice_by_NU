@@ -6,9 +6,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.util.Log;
-
 import com.alim.cse.noticebynu.Database.AppSettings;
-import com.alim.cse.noticebynu.Database.OfflineData;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,24 +18,25 @@ import java.net.URL;
 
 public class Downloader {
 
-    String Name;
+    String name;
+    String Name,From;
     private String URL;
     private String type;
     private Context context;
     private Callbacks callbacks;
 
-    public Downloader(Context context, String URL, String type, String Name) {
+    public Downloader(Context context, String URL, String type, String Name,String From) {
         this.context = context;
         this.type = type;
         this.Name = Name;
         this.URL = URL;
+        this.From = From;
     }
 
     public class DownloadTask extends AsyncTask<String, Integer, String> {
 
         private PowerManager.WakeLock mWakeLock;
         AppSettings appSettings = new AppSettings(context);
-        OfflineData offlineData = new OfflineData(context);
 
         @Override
         protected String doInBackground(String... sUrl) {
@@ -56,14 +55,13 @@ public class Downloader {
                 input = connection.getInputStream();
                 Log.println(Log.ASSERT,"CON",connection.toString());
 
-                File myDirectory = new File(Environment.getExternalStorageDirectory(), "/Notice by NU/"+type);
+                File myDirectory = new File(Environment.getExternalStorageDirectory(), "Android/data/com.alim.cse.noticebynu/"+type+"/"+From);
                 if(!myDirectory.exists())
-                    myDirectory.mkdir();
+                    myDirectory.mkdirs();
 
+                name = URL.substring(URL.lastIndexOf("/"));
                 if (appSettings.getAUTOSAVE()) {
-                    int last = offlineData.getLast();
-                    output = new FileOutputStream(myDirectory+"/"+last+"."+type);
-                    offlineData.setNAME(Name);
+                    output = new FileOutputStream(myDirectory+"/"+name+"."+type);
                 }
                 else
                     output = new FileOutputStream(myDirectory+"/temp."+type);
@@ -78,8 +76,12 @@ public class Downloader {
                         return null;
                     }
                     total += count;
-                    if (fileLength > 0) // only if total length is known
-                        publishProgress((int) (total * 100 / fileLength));
+                    if (fileLength > 0) {
+                        if (type.equals("zip"))
+                            publishProgress((int) (total * 100 / fileLength)/2);
+                        else
+                            publishProgress((int) (total * 100 / fileLength));
+                    }
                     output.write(data, 0, count);
                 }
             } catch (Exception e) {
@@ -112,24 +114,29 @@ public class Downloader {
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
-            callbacks.updateClient(false,progress[0],null);
+            callbacks.updateClient(type,false,progress[0],null);
         }
 
         @Override
         protected void onPostExecute(String result) {
             mWakeLock.release();
             File file;
-            if (appSettings.getAUTOSAVE()) {
-                int last = offlineData.getLast()-1;
-                file = new File("/sdcard/Notice by NU/" + type + "/" + last + "." + type);
+            if (result==null) {
+                if (appSettings.getAUTOSAVE()) {
+                    file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/"+name+"."+type);
+                } else
+                    file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/temp."+type);
             } else
-                file = new File("/sdcard/Notice by NU/"+type+"/temp."+type);
-            callbacks.updateClient(true,100,file);
+                file = null;
+            if (type.equals("zip"))
+                callbacks.updateClient(type,true,50,file);
+            else
+                callbacks.updateClient(type,true,100,file);
         }
     }
 
     public interface Callbacks{
-        void updateClient(boolean done, int pro ,File file);
+        void updateClient(String type,boolean done, int pro ,File file);
     }
 
     public void registerClient(Activity activity){

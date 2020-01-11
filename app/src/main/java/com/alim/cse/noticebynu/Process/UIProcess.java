@@ -78,7 +78,7 @@ public class UIProcess {
                     context.getPackageManager().getPackageInfo("com.twitter.android", 0);
                     Wait(new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=sourav_alim")));
                 } catch (Exception e) {
-                    Wait(new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/<place_user_name_here>")));
+                    Wait(new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/sourav_alim")));
                 }
             }
         });

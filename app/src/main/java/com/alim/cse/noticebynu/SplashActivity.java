@@ -19,15 +19,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.alim.cse.noticebynu.Database.AppSettings;
+import com.alim.cse.noticebynu.Process.Compressor;
 import com.alim.cse.noticebynu.Process.Connectivity;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 
 public class SplashActivity extends AppCompatActivity implements
         Updater.Callbacks, Connectivity.Callbacks {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     AppSettings appSettings;
     Connectivity networkCheck;
     Updater updater;
@@ -52,6 +55,7 @@ public class SplashActivity extends AppCompatActivity implements
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         networkCheck = new Connectivity();
         updater = new Updater(this);
@@ -60,16 +64,13 @@ public class SplashActivity extends AppCompatActivity implements
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            File myDirectory = new File(Environment.getExternalStorageDirectory(), "/Notice by NU/"+"pdf");
-            if(!myDirectory.exists())
-                myDirectory.mkdirs();
-            //networkCheck.hostAvailable();
+            networkCheck.hostAvailable();
         } else
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     Storage_Perm);
         //Will be deleted latter...
-       startActivity(new Intent(this, MainActivity.class));
+        //startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override

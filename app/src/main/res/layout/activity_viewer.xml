@@ -50,6 +50,12 @@
 
     </androidx.cardview.widget.CardView>
 
+    <com.mittsu.markedview.MarkedView
+        android:id="@+id/md_view"
+        android:layout_width="match_parent"
+        android:layout_marginTop="55dp"
+        android:layout_height="match_parent"/>
+
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/pdf_show"
         android:layout_width="match_parent"
@@ -71,6 +77,7 @@
             android:layout_marginEnd="50dp"/>
 
         <TextView
+            android:id="@+id/loading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Loading..."

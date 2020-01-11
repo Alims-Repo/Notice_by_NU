@@ -15,10 +15,10 @@ import android.view.ViewGroup;
 
 import com.alim.cse.noticebynu.Adapter.Updates;
 import com.alim.cse.noticebynu.Config.Final;
-import com.alim.cse.noticebynu.Database.OfflineData;
 import com.alim.cse.noticebynu.R;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,8 +26,6 @@ import java.util.List;
 
 public class SavedNotice extends Fragment {
 
-    private Thread thread;
-    private OfflineData offlineData;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -42,23 +40,12 @@ public class SavedNotice extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_saved_notice, container, false);
 
         swipeRefreshLayout = rootView.findViewById(R.id.refresh);
-        offlineData = new OfflineData(getActivity());
-
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-
-        });
-
-        new TASK().execute();
 
         recyclerView = rootView.findViewById(R.id.recycle_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new Updates(mData, mDate, mLink, true);
+        mAdapter = new Updates(mData, mDate, mLink, true,"Notice");
         recyclerView.setAdapter(mAdapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -67,8 +54,7 @@ public class SavedNotice extends Fragment {
                 new TASK().execute();
             }
         });
-
-
+        new TASK().execute();
         return rootView;
     }
 
@@ -78,27 +64,56 @@ public class SavedNotice extends Fragment {
             mData.clear();
             mDate.clear();
             mLink.clear();
-            String path = Final.Path() +"/pdf";
+            String path = Final.Path() +"/pdf/Notice";
             File directory = new File(path);
-            File[] files = directory.listFiles();
-            for (File file : files) {
-                int pos = file.getName().indexOf(".pdf");
-                String na = file.getName().substring(0,pos);
-                try {
-                    int n = Integer.parseInt(na);
-                    String name = offlineData.getNAME(n);
-                    if (!name.equals("temp") | name.equals("")) {
-                        Log.println(Log.ASSERT,"Name",name);
-                        mData.add(name);
-                        Date date = new Date(file.lastModified());
-                        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-                        String strDate = formatter.format(date);
-                        mDate.add(strDate);
-                        mLink.add(file.getPath());
-                        Log.println(Log.ASSERT,"File Path",file.getPath());
+            if (directory.exists()) {
+                File[] folder = directory.listFiles(new FileFilter() {
+                    @Override
+                    public boolean accept(File pathname) {
+                        return pathname.isDirectory();
                     }
-                } catch (Exception e) {
-                    Log.println(Log.ASSERT,"Saved Fragment",e.toString());
+                });
+                File[] files = directory.listFiles();
+                for (File str : folder) {
+                    File[] fold = str.listFiles();
+                    for (File file : fold) {
+                        try {
+                            Log.println(Log.ASSERT,"FOLDER",file.toString());
+                            String name = file.getName();
+                            if (!name.equals("temp") | name.equals("")) {
+                                Log.println(Log.ASSERT, "Name", name);
+                                mData.add(name);
+                                Date date = new Date(file.lastModified());
+                                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                                String strDate = formatter.format(date);
+                                mDate.add(strDate);
+                                mLink.add(file.getPath());
+                                Log.println(Log.ASSERT, "File Path", file.getPath());
+                            }
+                        } catch (Exception e) {
+                            Log.println(Log.ASSERT, "Saved Fragment", e.toString());
+                        }
+                    }
+                }
+                for (File file : files) {
+                    try {
+                        int pos = file.getName().indexOf(".pdf");
+                        String na = file.getName().substring(0, pos);
+                        int n = Integer.parseInt(na);
+                        String name = file.getName();
+                        if (!name.equals("temp") | name.equals("")) {
+                            Log.println(Log.ASSERT, "Name", name);
+                            mData.add(name);
+                            Date date = new Date(file.lastModified());
+                            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                            String strDate = formatter.format(date);
+                            mDate.add(strDate);
+                            mLink.add(file.getPath());
+                            Log.println(Log.ASSERT, "File Path", file.getPath());
+                        }
+                    } catch (Exception e) {
+                        Log.println(Log.ASSERT, "Saved Fragment", e.toString());
+                    }
                 }
             }
             return null;
