@@ -132,6 +132,10 @@ public class Updater {
                 Log.println(Log.ASSERT, "SIZE","file_size = " + fileLength);
                 input = connection.getInputStream();
 
+                File file = new File("/sdcard/Android/data/com.alim.cse.noticebynu/Application/");
+                if (!file.exists())
+                    file.mkdir();
+
                 output = new FileOutputStream(config.ApkPath());
 
                 byte[] data = new byte[4096];

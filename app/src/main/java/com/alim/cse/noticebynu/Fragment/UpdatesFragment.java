@@ -70,7 +70,7 @@ public class UpdatesFragment extends Fragment{
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
-            //new ParseURL().execute(Final.LINK());
+            new ParseURL().execute(Final.LINK());
             /*try {
                 new GetArray().execute(getStringFromFile("/sdcard/Notice by NU/html/9.txt"));
             } catch (IOException e) {
