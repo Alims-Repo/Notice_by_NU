@@ -1,7 +1,6 @@
 package com.alim.cse.noticebynu;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -10,8 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.alim.cse.noticebynu.Database.AppSettings;
 
 import java.util.Objects;
@@ -22,6 +21,7 @@ public class ErrorActivity extends AppCompatActivity {
     AppSettings appSettings;
     Button report;
     ImageView back;
+    TextView error;
     Button copy;
 
     @Override
@@ -44,15 +44,15 @@ public class ErrorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_error);
 
-
-        //error = findViewById(R.id.error);
         back = findViewById(R.id.back);
+        error = findViewById(R.id.error);
         report = findViewById(R.id.bug);
         copy = findViewById(R.id.copy);
         Bundle bundle = getIntent().getExtras();
+        
         if (bundle!=null) {
             error_text = Objects.requireNonNull(bundle).getString("ERROR", "");
-            //error.setText(error_text);
+            error.setText(error_text);
         }
 
         back.setOnClickListener(new View.OnClickListener() {

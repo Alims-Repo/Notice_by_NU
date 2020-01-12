@@ -4,33 +4,25 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.alim.cse.noticebynu.Database.AppSettings;
-import com.alim.cse.noticebynu.Process.Compressor;
 import com.alim.cse.noticebynu.Process.Connectivity;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.analytics.FirebaseAnalytics;
-
-import java.io.File;
 
 public class SplashActivity extends AppCompatActivity implements
         Updater.Callbacks, Connectivity.Callbacks {
 
-    private FirebaseAnalytics mFirebaseAnalytics;
     AppSettings appSettings;
     Connectivity networkCheck;
     Updater updater;
@@ -55,7 +47,6 @@ public class SplashActivity extends AppCompatActivity implements
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         networkCheck = new Connectivity();
         updater = new Updater(this);

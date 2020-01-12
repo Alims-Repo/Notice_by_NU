@@ -19,8 +19,14 @@ import com.airbnb.lottie.L;
 import com.alim.cse.noticebynu.Adapter.Updates;
 import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.R;
+import com.alim.cse.noticebynu.Services.PushData;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -35,7 +41,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class SyllabusDegree extends Fragment {
@@ -52,6 +61,8 @@ public class SyllabusDegree extends Fragment {
     static List<String> mDate = new ArrayList<>();
     static List<String> mLink = new ArrayList<>();
     private RecyclerView.LayoutManager layoutManager;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,15 +82,39 @@ public class SyllabusDegree extends Fragment {
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
-            new ParseURL().execute(Final.DEGREE());
-
-            /*try {
-                //new ParseURL().execute(Final.HONS());
-                new GetArray().execute(getStringFromFile("/sdcard/Notice by NU/html/12.txt"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
-            //new ParseURL().execute(Final.HONS());
+            progressBar.setProgress(10);
+            final long FIVE_MEGABYTE = 1024 * 1024*3;
+            StorageReference mountainsRef = storageRef.child("Degree.txt");
+            mountainsRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                @Override
+                public void onSuccess(StorageMetadata storageMetadata) {
+                    SimpleDateFormat formatter = new SimpleDateFormat("HH");
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(storageMetadata.getCreationTimeMillis());
+                    int date =  Integer.parseInt(formatter.format(calendar.getTime()));
+                    Date currentTime = Calendar.getInstance().getTime();
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH");
+                    int date_N = Integer.parseInt(sdf.format(currentTime));
+                    if (date+4==date_N | date-4==date_N)
+                        new PushData(getActivity()).new ParseURL().execute(Final.DEGREE(),"Degree.txt");
+                }
+            });
+            progressBar.setProgress(20);
+            mountainsRef.getBytes(FIVE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    String s = new String(bytes);
+                    new GetArray().execute(s);
+                    progressBar.setProgress(70);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.println(Log.ASSERT,"FAILED", exception.toString());
+                    progressBar.setProgress(0);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
         } else
             Shimmer();
 
@@ -106,43 +141,6 @@ public class SyllabusDegree extends Fragment {
         });
 
         return rootView;
-    }
-
-    public class ParseURL extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                publishProgress(0);
-                HttpClient httpClient = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(strings[0]);
-                HttpResponse response = httpClient.execute(httpGet);
-                HttpEntity httpEntity = response.getEntity();
-                publishProgress(30);
-                return EntityUtils.toString(httpEntity);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            progressBar.setProgress(values[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String response) {
-            super.onPostExecute(response);
-            if (response != null) {
-                try {
-                    new GetArray().execute(response);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else
-                SetError();
-        }
     }
 
     private class GetArray extends AsyncTask<String, Integer, List<String>> {

@@ -18,9 +18,22 @@ import android.widget.ProgressBar;
 
 import com.alim.cse.noticebynu.Adapter.Updates;
 import com.alim.cse.noticebynu.Config.Final;
+import com.alim.cse.noticebynu.MainActivity;
+import com.alim.cse.noticebynu.Process.UIProcess;
 import com.alim.cse.noticebynu.R;
+import com.alim.cse.noticebynu.Services.PushData;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -34,13 +47,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class UpdatesFragment extends Fragment{
 
     int start, end;
     String WebData;
+    ImageView menu;
     Boolean scroll = false;
     ProgressBar progressBar;
     FloatingActionButton top;
@@ -51,6 +69,8 @@ public class UpdatesFragment extends Fragment{
     static List<String> mDate = new ArrayList<>();
     static List<String> mLink = new ArrayList<>();
     private RecyclerView.LayoutManager layoutManager;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +80,7 @@ public class UpdatesFragment extends Fragment{
         shimmerFrameLayout = rootView.findViewById(R.id.shimmer_view_container);
         shimmerFrameLayout.startShimmer();
         top = rootView.findViewById(R.id.go_top);
+        menu = rootView.findViewById(R.id.menu);
         progressBar = rootView.findViewById(R.id.progress);
         recyclerView = rootView.findViewById(R.id.recycle_view);
         recyclerView.setHasFixedSize(true);
@@ -70,12 +91,41 @@ public class UpdatesFragment extends Fragment{
         recyclerView.setAdapter(mAdapter);
         if (mData.isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
-            new ParseURL().execute(Final.LINK());
-            /*try {
-                new GetArray().execute(getStringFromFile("/sdcard/Notice by NU/html/9.txt"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+            progressBar.setProgress(10);
+            final long FIVE_MEGABYTE = 1024 * 1024*3;
+            StorageReference mountainsRef = storageRef.child("Updates.txt");
+            mountainsRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                @Override
+                public void onSuccess(StorageMetadata storageMetadata) {
+                    SimpleDateFormat formatter = new SimpleDateFormat("HH");
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(storageMetadata.getCreationTimeMillis());
+                    int date =  Integer.parseInt(formatter.format(calendar.getTime()));
+                    Date currentTime = Calendar.getInstance().getTime();
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH");
+                    int date_N = Integer.parseInt(sdf.format(currentTime));
+                    if (date+4==date_N | date-4==date_N) {
+                        new PushData(getActivity()).new ParseURL().execute(Final.LINK(), "Updates.txt");
+                        Log.println(Log.ASSERT,"DATE","GOT IT");
+                    }
+                }
+            });
+            progressBar.setProgress(20);
+            mountainsRef.getBytes(FIVE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    String s = new String(bytes);
+                    new GetArray().execute(s);
+                    progressBar.setProgress(70);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.println(Log.ASSERT,"FAILED", exception.toString());
+                    progressBar.setProgress(0);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
         } else
             Shimmer();
 
@@ -85,6 +135,26 @@ public class UpdatesFragment extends Fragment{
                 recyclerView.smoothScrollToPosition(0);
                 scroll = true;
                 top.hide();
+            }
+        });
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(getActivity(), v);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.about:
+                                new UIProcess(getActivity()).About();
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                popup.inflate(R.menu.top_menu);
+                popup.show();
             }
         });
 
@@ -104,51 +174,12 @@ public class UpdatesFragment extends Fragment{
         return rootView;
     }
 
-    public class ParseURL extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                publishProgress(0);
-                HttpClient httpClient = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(strings[0]);
-                HttpResponse response = httpClient.execute(httpGet);
-                HttpEntity httpEntity = response.getEntity();
-                publishProgress(30);
-                return EntityUtils.toString(httpEntity);
-            } catch (Exception e) {
-                Log.println(Log.ASSERT, "ERROR", e.toString());
-                return null;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            progressBar.setProgress(values[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String response) {
-            super.onPostExecute(response);
-            if (response != null) {
-                try {
-                    new GetArray().execute(response);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.println(Log.ASSERT,"JSONException",e.toString());
-                }
-            } else
-                SetError();
-        }
-    }
-
     private class GetArray extends AsyncTask<String, Integer, List<String>> {
         @Override
         protected List<String> doInBackground(String... strings) {
             WebData = strings[0];
             try {
-                publishProgress(70);
+                publishProgress(90);
                 for (int x = 0; x < 200; x++) {
                     start = WebData.indexOf("<tr>");
                     end = WebData.indexOf("</tr>", start) + 5;
@@ -224,31 +255,5 @@ public class UpdatesFragment extends Fragment{
         shimmerFrameLayout.stopShimmer();
         progressBar.setVisibility(View.INVISIBLE);
         shimmerFrameLayout.setVisibility(View.GONE);
-    }
-
-    public static String convertStreamToString(InputStream is) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        Boolean firstLine = true;
-        while ((line = reader.readLine()) != null) {
-            if(firstLine){
-                sb.append(line);
-                firstLine = false;
-            } else {
-                sb.append("\n").append(line);
-            }
-        }
-        reader.close();
-        return sb.toString();
-    }
-
-    public static String getStringFromFile (String filePath) throws IOException {
-        File fl = new File(filePath);
-        FileInputStream fin = new FileInputStream(fl);
-        String ret = convertStreamToString(fin);
-        //Make sure you close all streams.
-        fin.close();
-        return ret;
     }
 }

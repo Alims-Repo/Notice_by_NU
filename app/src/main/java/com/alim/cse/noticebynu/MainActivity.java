@@ -5,38 +5,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
-
-import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.Database.AppSettings;
 import com.alim.cse.noticebynu.Fragment.SavedFragment;
 import com.alim.cse.noticebynu.Fragment.SettingsFragment;
 import com.alim.cse.noticebynu.Fragment.SyllabusFragment;
 import com.alim.cse.noticebynu.Fragment.UpdatesFragment;
-import com.alim.cse.noticebynu.Services.Downloader;
 import com.alim.cse.noticebynu.Services.Updater;
-import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements Updater.Callbacks {
 
@@ -144,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements Updater.Callbacks
                             click++;
                         } else
                             click++;
-                        if (mInterstitialAd.isLoaded())
+                        if (click%2==0 & mInterstitialAd.isLoaded())
                             mInterstitialAd.show();
                             switch (menuItem.getItemId()) {
                             case R.id.updates:

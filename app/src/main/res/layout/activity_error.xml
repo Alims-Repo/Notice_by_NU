@@ -34,14 +34,15 @@
 
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="70dp">
-
-    </androidx.recyclerview.widget.RecyclerView>
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="70dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/copy"
