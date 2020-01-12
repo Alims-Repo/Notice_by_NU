@@ -69,12 +69,13 @@ public class SavedSyllabus extends Fragment {
             String path = Final.Path() +"/pdf/Syllabus";
             File directory = new File(path);
             if (directory.exists()) {
-                File[] folder = directory.listFiles(new FileFilter() {
+                final File[] folder = directory.listFiles(new FileFilter() {
                     @Override
                     public boolean accept(File pathname) {
                         return pathname.isDirectory();
                     }
                 });
+                Log.println(Log.ASSERT,"FOLDER",folder.toString());
                 File[] files = directory.listFiles();
                 for (File str : folder) {
                     File[] fold = str.listFiles();
@@ -101,11 +102,10 @@ public class SavedSyllabus extends Fragment {
                     try {
                         int pos = file.getName().indexOf(".pdf");
                         String na = file.getName().substring(0, pos);
-                        int n = Integer.parseInt(na);
                         String name = file.getName();
                         if (!name.equals("temp") | name.equals("")) {
                             Log.println(Log.ASSERT, "Name", name);
-                            mData.add(name);
+                            mData.add(na);
                             Date date = new Date(file.lastModified());
                             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                             String strDate = formatter.format(date);

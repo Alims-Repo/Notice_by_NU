@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,19 +73,7 @@ public class MainActivity extends AppCompatActivity implements Updater.Callbacks
         mInterstitialAd.setAdUnitId("ca-app-pub-9098610474673834/2254545634");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
-            @Override
-            public void onRewardedAdLoaded() {
-                // Ad successfully loaded.
-            }
-
-            @Override
-            public void onRewardedAdFailedToLoad(int errorCode) {
-                // Ad failed to load.
-            }
-        };
-        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
-
+        LoadVideoAd();
 
         //startService(new Intent(this, Background.class));
         fragment = new UpdatesFragment();
@@ -130,7 +119,12 @@ public class MainActivity extends AppCompatActivity implements Updater.Callbacks
 
                                         @Override
                                         public void onRewardedAdFailedToLoad(int errorCode) {
-                                            // Ad failed to load.
+                                            new Handler().postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    LoadVideoAd();
+                                                }
+                                            },5000);
                                         }
                                     };
                                     rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
@@ -195,6 +189,17 @@ public class MainActivity extends AppCompatActivity implements Updater.Callbacks
                 super.onAdClicked();
                 Toast.makeText(MainActivity.this, "Clicked...", Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                    }
+                },5000);
+            }
         });
 
         FragmentStarter();
@@ -210,5 +215,20 @@ public class MainActivity extends AppCompatActivity implements Updater.Callbacks
     @Override
     public void updateClient(int call) {
 
+    }
+
+    private void LoadVideoAd() {
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+                // Ad successfully loaded.
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(int errorCode) {
+                // Ad failed to load.
+            }
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
     }
 }

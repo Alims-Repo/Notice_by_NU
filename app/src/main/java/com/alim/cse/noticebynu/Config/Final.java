@@ -11,7 +11,7 @@ public class Final {
     }
 
     public File ApkPath() {
-        return new File("/sdcard/Notice by NU/Application/Notice by NU.apk");
+        return new File("/sdcard/Android/data/com.alim.cse.noticebynu/Application/Notice by NU.apk");
     }
 
     public String APK_URL() {

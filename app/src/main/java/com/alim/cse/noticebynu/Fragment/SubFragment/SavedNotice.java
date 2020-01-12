@@ -99,11 +99,10 @@ public class SavedNotice extends Fragment {
                     try {
                         int pos = file.getName().indexOf(".pdf");
                         String na = file.getName().substring(0, pos);
-                        int n = Integer.parseInt(na);
                         String name = file.getName();
                         if (!name.equals("temp") | name.equals("")) {
                             Log.println(Log.ASSERT, "Name", name);
-                            mData.add(name);
+                            mData.add(na);
                             Date date = new Date(file.lastModified());
                             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                             String strDate = formatter.format(date);

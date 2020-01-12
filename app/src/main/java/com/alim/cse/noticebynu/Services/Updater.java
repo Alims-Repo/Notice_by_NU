@@ -95,7 +95,7 @@ public class Updater {
                     int VERSION_CODE = jsonObject.getJSONObject("apkData").getInt("versionCode");
                     int versionCode = BuildConfig.VERSION_CODE;
                     if (VERSION_CODE<versionCode) {
-                        Toast.makeText(context, "Application Closed...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Server is under maintenance.", Toast.LENGTH_SHORT).show();
                     } else if (VERSION_CODE> versionCode)
                         About(VERSION_NAME);
                     else  {
@@ -180,7 +180,7 @@ public class Updater {
             mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                     getClass().getName());
             mWakeLock.acquire();
-            File dir = new File(Environment.getDataDirectory().getPath()+"/Notice by NU/Application/");
+            File dir = new File(Environment.getDataDirectory().getPath()+"/Android/data/com.alim.cse.noticebynu/Application/");
             if(!dir.exists())
                 dir.mkdirs();
         }

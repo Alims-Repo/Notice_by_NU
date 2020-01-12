@@ -231,7 +231,7 @@ public class ViewerActivity extends AppCompatActivity implements Downloader.Call
             if (name.equals("docx")) {
                 try {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    Uri uri = FileProvider.getUriForFile(this, "com.alim.cse.noticebynu.provider", file);
+                    Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
                     Log.println(Log.ASSERT,"FILE",uri.toString());
                     intent.setData(uri);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
