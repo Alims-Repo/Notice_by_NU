@@ -136,7 +136,7 @@ public class Updater {
                 if (!file.exists())
                     file.mkdir();
 
-                output = new FileOutputStream(config.ApkPath());
+                output = new FileOutputStream(Final.Path());
 
                 byte[] data = new byte[4096];
                 long total = 0;
