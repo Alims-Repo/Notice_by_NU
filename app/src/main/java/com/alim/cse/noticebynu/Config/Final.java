@@ -10,7 +10,7 @@ public class Final {
         return new File("/sdcard/Android/data/com.alim.cse.noticebynu");
     }
 
-    public File ApkPath() {
+    public static File ApkPath() {
         return new File("/sdcard/Android/data/com.alim.cse.noticebynu/Application/Notice by NU.apk");
     }
 

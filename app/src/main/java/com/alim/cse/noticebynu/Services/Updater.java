@@ -134,9 +134,9 @@ public class Updater {
 
                 File file = new File("/sdcard/Android/data/com.alim.cse.noticebynu/Application/");
                 if (!file.exists())
-                    file.mkdir();
+                    file.mkdirs();
 
-                output = new FileOutputStream(Final.Path());
+                output = new FileOutputStream(Final.ApkPath());
 
                 byte[] data = new byte[4096];
                 long total = 0;
@@ -216,14 +216,14 @@ public class Updater {
                 Intent intent = null;
                 PendingIntent pendingIntent = null;
                 try {
-                    File PATH = new File("/sdcard/Notice by NU/Application/Notice by NU.apk");
+                    //File PATH = new File(Final.ApkPath());
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", PATH);
+                        Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", Final.ApkPath());
                         intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
                         intent.setData(apkUri);
                         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } else {
-                        Uri apkUri = Uri.fromFile(PATH);
+                        Uri apkUri = Uri.fromFile(Final.ApkPath());
                         intent = new Intent(Intent.ACTION_VIEW);
                         intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

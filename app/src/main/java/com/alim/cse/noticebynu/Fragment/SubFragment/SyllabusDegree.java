@@ -95,7 +95,7 @@ public class SyllabusDegree extends Fragment {
                     Date currentTime = Calendar.getInstance().getTime();
                     SimpleDateFormat sdf = new SimpleDateFormat("HH");
                     int date_N = Integer.parseInt(sdf.format(currentTime));
-                    if (date+4==date_N | date-4==date_N)
+                    if (date+4>date_N | date-4<date_N)
                         new PushData(getActivity()).new ParseURL().execute(Final.DEGREE(),"Degree.txt");
                 }
             });
