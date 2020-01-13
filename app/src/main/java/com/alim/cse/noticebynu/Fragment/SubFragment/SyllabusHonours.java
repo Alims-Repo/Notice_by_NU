@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import com.alim.cse.noticebynu.Adapter.Updates;
 import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.Fragment.UpdatesFragment;
+import com.alim.cse.noticebynu.Process.Compressor;
 import com.alim.cse.noticebynu.R;
 import com.alim.cse.noticebynu.Services.PushData;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -81,7 +82,7 @@ public class SyllabusHonours extends Fragment {
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setProgress(10);
             final long FIVE_MEGABYTE = 1024 * 1024*3;
-            StorageReference mountainsRef = storageRef.child("Honours.txt");
+            StorageReference mountainsRef = storageRef.child("Honours.zip");
             mountainsRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                 @Override
                 public void onSuccess(StorageMetadata storageMetadata) {
@@ -93,15 +94,19 @@ public class SyllabusHonours extends Fragment {
                     SimpleDateFormat sdf = new SimpleDateFormat("HH");
                     int date_N = Integer.parseInt(sdf.format(currentTime));
                     if (date+4>date_N | date-4<date_N)
-                        new PushData(getActivity()).new ParseURL().execute(Final.HONS(),"Honours.txt");
+                        new PushData(getActivity()).new ParseURL().execute(Final.HONS(),"Honours.zip");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    new PushData(getActivity()).new ParseURL().execute(Final.HONS(),"Honours.zip");
                 }
             });
             progressBar.setProgress(20);
             mountainsRef.getBytes(FIVE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
-                    String s = new String(bytes);
-                    new GetArray().execute(s);
+                    new GetArray().execute(new Compressor(bytes).Unzip());
                     progressBar.setProgress(70);
                 }
             }).addOnFailureListener(new OnFailureListener() {

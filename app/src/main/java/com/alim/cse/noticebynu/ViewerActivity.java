@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -16,10 +15,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alim.cse.noticebynu.Database.AppSettings;
-import com.alim.cse.noticebynu.Process.Compressor;
+import com.alim.cse.noticebynu.Process.Decompressor;
 import com.alim.cse.noticebynu.Process.PathFinder;
 import com.alim.cse.noticebynu.Services.Downloader;
 import com.github.barteksc.pdfviewer.PDFView;
@@ -27,7 +25,7 @@ import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.mittsu.markedview.MarkedView;
 import java.io.File;
 
-public class ViewerActivity extends AppCompatActivity implements Downloader.Callbacks, Compressor.Callbacks {
+public class ViewerActivity extends AppCompatActivity implements Downloader.Callbacks, Decompressor.Callbacks {
 
     TextView loading_text;
     MarkedView mdView;
@@ -189,7 +187,7 @@ public class ViewerActivity extends AppCompatActivity implements Downloader.Call
                 Bundle bundle = getIntent().getExtras();
                 String From = bundle.getString("LOCATION");
                 loading_text.setText("Decompressing ZIP...");
-                Compressor compressor = new Compressor(file,From);
+                Decompressor compressor = new Decompressor(file,From);
                 compressor.registerClient(this);
                 compressor.new Unzip().execute();
             }

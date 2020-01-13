@@ -230,7 +230,9 @@ public class Updater {
                     }
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    Log.println(Log.ASSERT,"INSTALL",e.toString());
+                }
                 context.startActivity(intent);
                 Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
                 notification.PushNotification(101,"Downloaded","Click in update application."

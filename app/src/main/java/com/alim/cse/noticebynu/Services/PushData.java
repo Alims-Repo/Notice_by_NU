@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 
+import com.alim.cse.noticebynu.Process.Compressor;
 import com.alim.cse.noticebynu.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -95,9 +96,13 @@ public class PushData {
                 Log.println(Log.ASSERT,"Exception",e.toString());
             }
             byte[] bytes = temp.getBytes();
+
             Log.println(Log.ASSERT, "BYTES", new String(bytes));
+            String n = strings[1].substring(0,strings[1].length()-3)+"txt";
+            Compressor compressor = new Compressor(bytes);
+
             StorageReference mountainsRef = storageRef.child(strings[1]);
-            UploadTask uploadTask = mountainsRef.putBytes(bytes);
+            UploadTask uploadTask = mountainsRef.putBytes(compressor.Zip(n));
 
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
