@@ -8,10 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.Database.AppSettings;
 import com.alim.cse.noticebynu.ErrorActivity;
 import com.alim.cse.noticebynu.MainActivity;
 import com.alim.cse.noticebynu.R;
+import com.alim.cse.noticebynu.Services.PushData;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -23,6 +26,7 @@ public class SettingsFragment extends Fragment implements Updater.Callbacks {
     Updater updater;
     LinearLayout update;
     LinearLayout error;
+    LinearLayout update_data;
     Chip auto, on, off;
     Chip n_on, n_off;
     AppSettings appSettings;
@@ -40,6 +44,7 @@ public class SettingsFragment extends Fragment implements Updater.Callbacks {
 
         error = rootView.findViewById(R.id.error);
         update = rootView.findViewById(R.id.check_update);
+        update_data = rootView.findViewById(R.id.update_data);
         auto = rootView.findViewById(R.id.auto);
         on = rootView.findViewById(R.id.on);
         off = rootView.findViewById(R.id.off);
@@ -113,6 +118,17 @@ public class SettingsFragment extends Fragment implements Updater.Callbacks {
                     n_off.setClickable(false);
                     appSettings.setAUTOSAVE(false);
                 }
+            }
+        });
+
+        update_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new PushData(getActivity()).new ParseURL().execute(Final.LINK(), "Updates.zip");
+                new PushData(getActivity()).new ParseURL().execute(Final.HONS(),"Honours.zip");
+                new PushData(getActivity()).new ParseURL().execute(Final.PROFS(),"Professional.zip");
+                new PushData(getActivity()).new ParseURL().execute(Final.MASTERS(),"Masters.zip");
+                new PushData(getActivity()).new ParseURL().execute(Final.DEGREE(),"Degree.zip");
             }
         });
 

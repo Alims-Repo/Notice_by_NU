@@ -93,7 +93,7 @@ public class SyllabusHonours extends Fragment {
                     Date currentTime = Calendar.getInstance().getTime();
                     SimpleDateFormat sdf = new SimpleDateFormat("HH");
                     int date_N = Integer.parseInt(sdf.format(currentTime));
-                    if (date+4>date_N | date-4<date_N)
+                    if (date-date_N>4 | date_N-date>4)
                         new PushData(getActivity()).new ParseURL().execute(Final.HONS(),"Honours.zip");
                 }
             }).addOnFailureListener(new OnFailureListener() {

@@ -123,9 +123,11 @@ public class Downloader {
             File file;
             if (result==null) {
                 if (appSettings.getAUTOSAVE()) {
-                    file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/"+name+"."+type);
+                    file = new File(Environment.getExternalStorageDirectory(),
+                            "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/"+name+"."+type);
                 } else
-                    file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/temp."+type);
+                    file = new File(Environment.getExternalStorageDirectory(),
+                            "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/temp."+type);
             } else
                 file = null;
             if (type.equals("zip"))

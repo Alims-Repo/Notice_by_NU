@@ -231,6 +231,7 @@ public class PathFinder {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
     private static boolean isGoogleDriveUri(Uri uri) {
-        return "com.google.android.apps.docs.storage".equals(uri.getAuthority()) || "com.google.android.apps.docs.storage.legacy".equals(uri.getAuthority());
+        return "com.google.android.apps.docs.storage".equals(uri.getAuthority()) ||
+                "com.google.android.apps.docs.storage.legacy".equals(uri.getAuthority());
     }
 }

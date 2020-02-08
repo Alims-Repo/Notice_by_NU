@@ -1,26 +1,11 @@
 package com.alim.cse.noticebynu.Process;
 
-import android.os.Environment;
 import android.util.Log;
-
-import com.airbnb.lottie.L;
-import com.google.android.gms.common.util.IOUtils;
-
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class Compressor {
 

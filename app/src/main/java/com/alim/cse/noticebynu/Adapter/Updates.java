@@ -128,6 +128,13 @@ public class Updates extends RecyclerView.Adapter<Updates.MyViewHolder>  {
                 }
             }
         });
+
+        cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
     }
 
     @Override
