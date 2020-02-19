@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +22,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
@@ -44,21 +49,35 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 
 @SuppressLint("SetTextI18n , StaticFieldLeak")
 public class Updater {
 
     private Final config;
     private String BUG = null;
-    private boolean push = true;
-    private Notification notification;
     private Callbacks callbacks;
     private Context context;
 
+    private PendingIntent pendingIntent = null;
+    private android.app.Notification.Builder notification;
+    private NotificationManager notificationManager;
+    private NotificationManagerCompat notificationManager_compat;
+    private NotificationCompat.Builder builder;
+
     public Updater(Context context) {
         this.context = context;
-        notification = new Notification(context,"Download",
-                "Updater","Downloading Notification");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager = (NotificationManager) context
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel("Download", "Updater", NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription("\"Downloading Notification\"");
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
+            notification = new android.app.Notification.Builder(context, "Download");
+        } else {
+            notificationManager_compat = NotificationManagerCompat.from(context);
+            builder = new NotificationCompat.Builder(context, "Download");
+        }
         config = new Final();
     }
 
@@ -157,7 +176,11 @@ public class Updater {
                     output.write(data, 0, count);
                 }
             } catch (Exception e) {
-                notification.Cancel(100);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    notificationManager.cancel(100);
+                } else {
+                    notificationManager_compat.cancel(100);
+                }
                 BUG = "Exception : "+e.toString();
                 Log.println(Log.ASSERT,"ERROR",e.toString());
                 return e.toString();
@@ -193,16 +216,23 @@ public class Updater {
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
             if (progress[0]==100) {
-                notification.Cancel(100);
-            } else if (push)
-                ProgressNotification(progress[0]);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    notificationManager.cancel(100);
+                } else {
+                    notificationManager_compat.cancel(100);
+                }
+            } else {
+                notification.setProgress(100, progress[0], false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    notificationManager.notify(100, notification.build());
+                else
+                    notificationManager_compat.notify(100, builder.build());
+            }
         }
 
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(context, "OK", Toast.LENGTH_SHORT).show();
-            notification = new Notification(context
-                    ,"Download","Updater","Downloading Notification");
             if (mWakeLock.isHeld())
                 mWakeLock.release();
             if (result != null) {
@@ -210,8 +240,25 @@ public class Updater {
                 intent.putExtra("ERROR",BUG);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent,0);
                 Toast.makeText(context,"Download error: "+result, Toast.LENGTH_LONG).show();
-                notification.PushNotification(101,"Failed","Download error: "+result
-                        ,R.drawable.ic_error_black_24dp,0,pendingIntent,false,false,false,1,true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    notification.setContentTitle("Failed")
+                            .setContentText("Download error: "+result)
+                            .setSmallIcon(R.drawable.ic_error_black_24dp)
+                            .setChannelId("Download")
+                            .setOngoing(false)
+                            .setContentIntent(pendingIntent)
+                            .build();
+                    notification.setProgress(0,0,false);
+                    notification.setStyle(new android.app.Notification.BigTextStyle());
+                    notificationManager.notify(101, notification.build());
+                } else {
+                    builder.setContentTitle("Failed")
+                            .setContentText("Download error: "+result)
+                            .setSmallIcon(R.drawable.ic_error_black_24dp)
+                            .setOngoing(false);
+                    builder.setStyle(new NotificationCompat.BigTextStyle());
+                    notificationManager_compat.notify(101, builder.build());
+                }
             } else {
                 Intent intent = null;
                 PendingIntent pendingIntent = null;
@@ -235,23 +282,28 @@ public class Updater {
                 }
                 context.startActivity(intent);
                 Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
-                notification.PushNotification(101,"Downloaded","Click in update application."
-                        ,R.drawable.ic_checked,0,pendingIntent,false,false,false,1,true);
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    notification.setContentTitle("Downloaded")
+                            .setContentText("Click in update application.")
+                            .setSmallIcon(R.drawable.ic_checked)
+                            .setChannelId("Download")
+                            .setOngoing(false)
+                            .setContentIntent(pendingIntent)
+                            .build();
+                    notification.setProgress(0,0,false);
+                    notification.setStyle(new android.app.Notification.BigTextStyle());
+                    notificationManager.notify(101, notification.build());
+                } else {
+                    builder.setContentTitle("Downloaded")
+                            .setContentText("Click in update application.")
+                            .setSmallIcon(R.drawable.ic_checked)
+                            .setOngoing(false);
+                    builder.setStyle(new NotificationCompat.BigTextStyle());
+                    notificationManager_compat.notify(101, builder.build());
+                }
             }
         }
-    }
-
-    private void ProgressNotification(int progress) {
-        push = false;
-        notification.PushNotification(100,"Downloading...","Downloading apk to update."
-                , R.drawable.ic_file_download_black_24dp,progress, null,true,false,true,1,false);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                push = true;
-            }
-        },1250);
     }
 
     public interface Callbacks{
@@ -268,7 +320,6 @@ public class Updater {
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.update_dialog);
 
-        TextView changelog = dialog.findViewById(R.id.change_log);
         Button update_btn = dialog.findViewById(R.id.update_btn);
         TextView current_version = dialog.findViewById(R.id.current_version);
         TextView latest_version = dialog.findViewById(R.id.latest_version);
@@ -283,8 +334,24 @@ public class Updater {
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_GRANTED) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        notification.PushNotification(100,"Downloading...","Downloading apk to update."
-                                ,R.drawable.ic_file_download_black_24dp,0, null,true,true,true,1,true);
+                        notification.setContentTitle("Downloading...")
+                                .setContentText("Downloading apk to update.")
+                                .setSmallIcon(R.drawable.ic_file_download_black_24dp)
+                                .setChannelId("Download")
+                                .setOngoing(true)
+                                .setContentIntent(pendingIntent)
+                                .build();
+                        notification.setProgress(100,0,true);
+                        notification.setStyle(new android.app.Notification.BigTextStyle());
+                        notificationManager.notify(100, notification.build());
+                    } else {
+                        builder.setContentTitle("Downloading...")
+                                .setContentText("Downloading apk to update.")
+                                .setSmallIcon(R.drawable.ic_file_download_black_24dp)
+                                .setOngoing(true);
+                        builder.setProgress(100,0,true);
+                        builder.setStyle(new NotificationCompat.BigTextStyle());
+                        notificationManager_compat.notify(100, builder.build());
                     }
                     new DownloadTask().execute();
                 } else

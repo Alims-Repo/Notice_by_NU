@@ -42,7 +42,7 @@ public class Notification  {
         }
     }
 
-    void PushNotification(int id, String Title, String Content, int icon, int prog, PendingIntent pendingIntent
+    /*void PushNotification(int id, String Title, String Content, int icon, int prog, PendingIntent pendingIntent
             , boolean progress, boolean indetermine, boolean ongoing, int style, boolean sound) {
 
         if (sound) {
@@ -87,5 +87,5 @@ public class Notification  {
         } else {
             notificationManager_compat.cancel(id);
         }
-    }
+    }*/
 }
