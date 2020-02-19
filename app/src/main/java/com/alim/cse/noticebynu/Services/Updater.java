@@ -167,8 +167,8 @@ public class Updater {
                         output.close();
                     if (input != null)
                         input.close();
-                } catch (IOException ignored) {
-                    BUG = BUG+"\n"+"IOException : "+ignored.toString();
+                } catch (IOException e) {
+                    BUG = BUG+"\n"+"IOException : "+e.toString();
                 }
 
                 if (connection != null)
@@ -268,6 +268,7 @@ public class Updater {
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.update_dialog);
 
+        TextView changelog = dialog.findViewById(R.id.change_log);
         Button update_btn = dialog.findViewById(R.id.update_btn);
         TextView current_version = dialog.findViewById(R.id.current_version);
         TextView latest_version = dialog.findViewById(R.id.latest_version);

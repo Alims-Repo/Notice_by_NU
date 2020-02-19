@@ -22,6 +22,10 @@ public class Final {
         return "https://raw.githubusercontent.com/Hacker-0/Notice_by_NU/master/app/release/output.json";
     }
 
+    public String CHANGELOG() {
+        return "https://raw.githubusercontent.com/Hacker-0/Notice_by_NU/master/app/src/main/res/values/strings.xml";
+    }
+
     public static String LINK() {
         return "http://www.nu.ac.bd";
     }

@@ -58,10 +58,17 @@ public class Downloader {
                 File myDirectory = new File(Environment.getExternalStorageDirectory(), "Android/data/com.alim.cse.noticebynu/"+type+"/"+From);
                 if(!myDirectory.exists())
                     myDirectory.mkdirs();
+                else
+                    Log.println(Log.ASSERT,"FILE LOCATION","Exist");
 
                 name = URL.substring(URL.lastIndexOf("/"));
                 if (appSettings.getAUTOSAVE()) {
-                    output = new FileOutputStream(myDirectory+"/"+name+"."+type);
+                    try {
+                        output = new FileOutputStream(myDirectory + "/" + Name + "." + type);
+                    } catch (Exception e) {
+                        Name = name;
+                        output = new FileOutputStream(myDirectory + "/" + Name + "." + type);
+                    }
                 }
                 else
                     output = new FileOutputStream(myDirectory+"/temp."+type);
@@ -85,7 +92,7 @@ public class Downloader {
                     output.write(data, 0, count);
                 }
             } catch (Exception e) {
-                Log.println(Log.ASSERT,"URL",e.toString());
+                Log.println(Log.ASSERT,"Down",e.toString());
                 return e.toString();
             } finally {
                 try {
@@ -124,7 +131,7 @@ public class Downloader {
             if (result==null) {
                 if (appSettings.getAUTOSAVE()) {
                     file = new File(Environment.getExternalStorageDirectory(),
-                            "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/"+name+"."+type);
+                            "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/"+Name+"."+type);
                 } else
                     file = new File(Environment.getExternalStorageDirectory(),
                             "Android/data/com.alim.cse.noticebynu/"+type+"/"+From+"/temp."+type);
