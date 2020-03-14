@@ -4,15 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,16 +15,10 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.Database.AppSettings;
-import com.alim.cse.noticebynu.Process.Compressor;
 import com.alim.cse.noticebynu.Process.Connectivity;
-import com.alim.cse.noticebynu.Services.PushData;
 import com.alim.cse.noticebynu.Services.Updater;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.io.File;
 
 public class SplashActivity extends AppCompatActivity implements
         Updater.Callbacks, Connectivity.Callbacks {

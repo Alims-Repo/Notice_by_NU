@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
@@ -22,17 +21,14 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-
 import com.alim.cse.noticebynu.BuildConfig;
 import com.alim.cse.noticebynu.Config.Final;
 import com.alim.cse.noticebynu.ErrorActivity;
 import com.alim.cse.noticebynu.R;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -51,7 +47,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 
-@SuppressLint("SetTextI18n , StaticFieldLeak")
+@SuppressLint({"SetTextI18n , StaticFieldLeak","SdCardPath"})
 public class Updater {
 
     private Final config;
@@ -204,9 +200,11 @@ public class Updater {
         protected void onPreExecute() {
             super.onPreExecute();
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                    getClass().getName());
-            mWakeLock.acquire();
+            if (pm != null) {
+                mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                        getClass().getName());
+                mWakeLock.acquire(5*60*1000L /*5 minutes*/);
+            }
             File dir = new File(Environment.getDataDirectory().getPath()+"/Android/data/com.alim.cse.noticebynu/Application/");
             if(!dir.exists())
                 dir.mkdirs();
